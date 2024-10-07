@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dto.EmployeeDto;
 import com.example.entity.Employee;
+import com.example.exception.InvalidInputException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.EmployeeMapper;
 import com.example.repository.EmployeeRepository;
@@ -104,22 +105,21 @@ public class EmployeeService {
 
     // Validation logic for input
     private void validateEmployeeInput(EmployeeDto employeeDto) {
-        List<Supplier<Boolean>> validations = List.of(
-                () -> employeeDto.getName() == null || employeeDto.getName().trim().isEmpty(),
-                () -> employeeDto.getDateOfBirth() == null || employeeDto.getDateOfBirth().isAfter(LocalDate.now()),
-                () -> employeeDto.getJobRole() == null || employeeDto.getJobRole().trim().isEmpty(),
-                () -> employeeDto.getGender() == null || employeeDto.getGender().trim().isEmpty()
-        );
-        List<String> errorMessages = List.of(
-                "Employee name is required.",
-                "Invalid date of birth.",
-                "Job role is required.",
-                "Gender is required."
-        );
-        for (int i = 0; i < validations.size(); i++) {
-            if (validations.get(i).get()) {
-                throw new IllegalArgumentException(errorMessages.get(i));
-            }
+        if (employeeDto.getName() == null || employeeDto.getName().trim().isEmpty()) {
+            throw new InvalidInputException("Employee name is required.");
+        }
+
+        if (employeeDto.getDateOfBirth() == null || employeeDto.getDateOfBirth().isAfter(LocalDate.now())) {
+            throw new InvalidInputException("Invalid date of birth. It cannot be in the future.");
+        }
+
+        if (employeeDto.getJobRole() == null || employeeDto.getJobRole().trim().isEmpty()) {
+            throw new InvalidInputException("Job role is required.");
+        }
+
+        if (employeeDto.getGender() == null || employeeDto.getGender().trim().isEmpty()) {
+            throw new InvalidInputException("Gender is required.");
         }
     }
+
 }

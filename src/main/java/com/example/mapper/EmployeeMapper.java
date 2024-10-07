@@ -3,7 +3,6 @@ package com.example.mapper;
 import com.example.dto.EmployeeDto;
 import com.example.entity.Employee;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
