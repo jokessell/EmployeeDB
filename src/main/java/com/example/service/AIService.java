@@ -1,11 +1,13 @@
 package com.example.service;
 
+import com.example.dto.GenerateMoreRequestDto;
 import com.example.dto.Message;
 import com.example.dto.OpenAIRequest;
 import com.example.dto.UserInputDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;  // For logging
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j  // For logging
 public class AIService {
 
     @Value("${openai.api.key}")
@@ -34,13 +35,13 @@ public class AIService {
 
         // Build the OpenAI request object with the model, the list of messages, and token limit
         return new OpenAIRequest(
-                "gpt-4o-mini",       // Model name (you can adjust this based on the model you're using)
-                List.of(userMessage),   // List of messages (in this case, just the user prompt)
-                1000                    // Set the max tokens (adjust this as needed)
+                "gpt-4",               // Adjust the model name as needed
+                List.of(userMessage),  // List of messages (in this case, just the user prompt)
+                1000                   // Set the max tokens (adjust this as needed)
         );
     }
 
-
+    // Existing method for initial data generation
     public Map<String, Object> generateTestData(UserInputDto userInput) {
         try {
             // Step 1: Create a single prompt for both refining the topic and generating the data
@@ -56,16 +57,17 @@ public class AIService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println("Raw response: " + rawResponse);
+            log.debug("Raw response: {}", rawResponse);
+
             // Step 3: Process the response to extract the refined topic, data, and data types
             return processResponse(rawResponse);
 
         } catch (WebClientResponseException e) {
-            System.err.println("Error from OpenAI: " + e.getResponseBodyAsString());
-            throw new RuntimeException("Failed to generate data from OpenAI API");
+            log.error("Error from OpenAI: {}", e.getResponseBodyAsString());
+            throw new RuntimeException("Failed to generate data from OpenAI API", e);
         } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
-            throw new RuntimeException("Unexpected error occurred while generating data");
+            log.error("Unexpected error: {}", e.getMessage(), e);
+            throw new RuntimeException("Unexpected error occurred while generating data", e);
         }
     }
 
@@ -97,6 +99,59 @@ public class AIService {
         );
     }
 
+    // New method for generating more data
+    public Map<String, Object> generateMoreTestData(GenerateMoreRequestDto requestDto) {
+        try {
+            // Step 1: Create the prompt for generating more data
+            String prompt = generateMoreDataPrompt(requestDto);
+
+            // Step 2: Send the prompt to OpenAI API and get the response
+            String rawResponse = webClient.post()
+                    .uri("https://api.openai.com/v1/chat/completions")
+                    .header("Authorization", "Bearer " + openAiApiKey)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(buildOpenAIRequest(prompt))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            log.debug("Raw response: {}", rawResponse);
+
+            // Step 3: Process the response to extract the data
+            return processResponse(rawResponse);
+
+        } catch (WebClientResponseException e) {
+            log.error("Error from OpenAI: {}", e.getResponseBodyAsString());
+            throw new RuntimeException("Failed to generate data from OpenAI API", e);
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage(), e);
+            throw new RuntimeException("Unexpected error occurred while generating data", e);
+        }
+    }
+
+    private String generateMoreDataPrompt(GenerateMoreRequestDto requestDto) {
+        String topic = requestDto.getTopic();
+        int recordCount = requestDto.getRecordCount();
+        List<String> properties = requestDto.getProperties();
+
+        // Construct the prompt
+        StringBuilder promptBuilder = new StringBuilder();
+        promptBuilder.append(String.format("Please generate %d additional records for the topic \"%s\".", recordCount, topic));
+
+        if (properties != null && !properties.isEmpty()) {
+            promptBuilder.append(" Each record should include the following properties:");
+            for (String property : properties) {
+                promptBuilder.append(String.format(" \"%s\",", property));
+            }
+            // Remove the trailing comma
+            promptBuilder.setLength(promptBuilder.length() - 1);
+            promptBuilder.append(".");
+        }
+
+        promptBuilder.append(" Provide realistic and diverse values relevant to the topic. Respond in valid JSON format only, with no additional text or explanations.");
+
+        return promptBuilder.toString();
+    }
 
     private Map<String, Object> processResponse(String rawResponse) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
@@ -110,11 +165,12 @@ public class AIService {
             String content = choicesNode.get(0).get("message").get("content").asText();
 
             // Print out the extracted content for debugging
-            System.out.println("Extracted content: " + content);
+            log.debug("Extracted content: {}", content);
 
             // Remove markdown code block indicators (`` ```json `` and `` ``` ``)
             String cleanedContent = content.replaceAll("```json", "").replaceAll("```", "").trim();
-            System.out.println("Cleaned content: " + cleanedContent);
+            log.debug("Cleaned content: {}", cleanedContent);
+
             // Now try to parse the cleaned content as JSON
             JsonNode dataArray = objectMapper.readTree(cleanedContent);  // Parse cleaned JSON array
 
@@ -130,8 +186,5 @@ public class AIService {
 
         return result;
     }
-
-
-
 
 }

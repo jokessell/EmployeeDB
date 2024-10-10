@@ -1,13 +1,11 @@
 package com.example.controller;
 
+import com.example.dto.GenerateMoreRequestDto;
 import com.example.dto.UserInputDto;
 import com.example.service.AIService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,4 +33,19 @@ public class AIController {
         return dataList;
     }
 
+    // New endpoint for "Generate More"
+    @PostMapping("/generate-more-data")
+    public List<String> generateMoreData(@RequestBody GenerateMoreRequestDto requestDto) {
+        Map<String, Object> result = aiService.generateMoreTestData(requestDto);
+
+        // Extract the data field from the result and return it as a list of strings
+        JsonNode dataJson = (JsonNode) result.get("data");
+        List<String> dataList = new ArrayList<>();
+
+        if (dataJson != null && dataJson.isArray()) {
+            dataJson.forEach(item -> dataList.add(item.toString()));  // Convert each record to a string
+        }
+
+        return dataList;
+    }
 }
