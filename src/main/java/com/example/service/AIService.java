@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j  // For logging
 public class AIService {
 
-    @Value("${openai.api.key}")
+    @Value("${openai.api.key:}")
     private String openAiApiKey;
 
     private final WebClient webClient;

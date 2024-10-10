@@ -27,7 +27,7 @@ import org.json.JSONObject;
 @Service
 public class EmployeeService {
 
-    @Value("${openai.api.key}")
+    @Value("${openai.api.key:}")
     private String openAiApiKey;
 
     private final EmployeeRepository employeeRepository;
