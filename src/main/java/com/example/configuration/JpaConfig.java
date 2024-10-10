@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import javax.sql.DataSource;
 
-@Configuration
+//@Configuration
 public class JpaConfig {
 
     @Bean

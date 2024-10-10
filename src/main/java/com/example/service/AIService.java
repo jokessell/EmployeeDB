@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class AIService {
 
-    @Value("${openai.api.key}")
+    @Value("${openai.api.key:}")
     private String openAiApiKey;
 
     private final WebClient webClient;

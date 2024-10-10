@@ -1,4 +1,4 @@
-CREATE TABLE EMPLOYEE_TBL (
+CREATE TABLE IF NOT EXISTS EMPLOYEE_TBL (
                               EMPLOYEE_ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                               NAME VARCHAR(100) NOT NULL,
                               DATE_OF_BIRTH DATE NOT NULL,
