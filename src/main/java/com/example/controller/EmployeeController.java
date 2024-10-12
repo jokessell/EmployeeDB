@@ -3,13 +3,15 @@ package com.example.controller;
 import com.example.dto.EmployeeDto;
 import com.example.entity.Employee;
 import com.example.service.EmployeeService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("api/v1/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -29,19 +31,21 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
         Employee createdEmployee = employeeService.createEmployee(employeeDto);
-        return ResponseEntity.ok(createdEmployee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<List<Employee>> createEmployeesBatch(@RequestBody List<EmployeeDto> employeeDtos) {
+    public ResponseEntity<List<Employee>> createEmployeesBatch(@Valid @RequestBody List<@Valid EmployeeDto> employeeDtos) {
         List<Employee> createdEmployees = employeeService.createEmployeesBatch(employeeDtos);
-        return ResponseEntity.ok(createdEmployees);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployees);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<Employee> updateEmployee(
+            @PathVariable Long id,
+            @Valid @RequestBody EmployeeDto employeeDto) {
         Employee updatedEmployee = employeeService.updateEmployee(id, employeeDto);
         return ResponseEntity.ok(updatedEmployee);
     }

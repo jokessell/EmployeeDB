@@ -4,29 +4,35 @@ import com.example.dto.GenerateMoreRequestDto;
 import com.example.dto.Message;
 import com.example.dto.OpenAIRequest;
 import com.example.dto.UserInputDto;
+import com.example.entity.AIData;
+import com.example.repository.AIDataRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;  // For logging
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j  // For logging
+@Slf4j
 public class AIService {
 
     @Value("${openai.api.key:}")
     private String openAiApiKey;
 
     private final WebClient webClient;
+    private final AIDataRepository aiDataRepository; // Injected repository
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private OpenAIRequest buildOpenAIRequest(String prompt) {
@@ -42,6 +48,7 @@ public class AIService {
     }
 
     // Existing method for initial data generation
+    @Transactional
     public Map<String, Object> generateTestData(UserInputDto userInput) {
         try {
             // Step 1: Create a single prompt for both refining the topic and generating the data
@@ -60,7 +67,50 @@ public class AIService {
             log.debug("Raw response: {}", rawResponse);
 
             // Step 3: Process the response to extract the refined topic, data, and data types
-            return processResponse(rawResponse);
+            Map<String, Object> result = processResponse(rawResponse);
+
+            // Step 4: Save the data to the AI_DATA table
+            List<JsonNode> dataList = (List<JsonNode>) result.get("data");
+            saveAIData(userInput.getTopic(), dataList);
+
+            return result;
+
+        } catch (WebClientResponseException e) {
+            log.error("Error from OpenAI: {}", e.getResponseBodyAsString());
+            throw new RuntimeException("Failed to generate data from OpenAI API", e);
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage(), e);
+            throw new RuntimeException("Unexpected error occurred while generating data", e);
+        }
+    }
+
+    // New method for generating more data
+    @Transactional
+    public Map<String, Object> generateMoreTestData(GenerateMoreRequestDto requestDto) {
+        try {
+            // Step 1: Create the prompt for generating more data
+            String prompt = generateMoreDataPrompt(requestDto);
+
+            // Step 2: Send the prompt to OpenAI API and get the response
+            String rawResponse = webClient.post()
+                    .uri("https://api.openai.com/v1/chat/completions")
+                    .header("Authorization", "Bearer " + openAiApiKey)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(buildOpenAIRequest(prompt))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            log.debug("Raw response: {}", rawResponse);
+
+            // Step 3: Process the response to extract the data
+            Map<String, Object> result = processResponse(rawResponse);
+
+            // Step 4: Append the new data to the existing AI_DATA record
+            List<JsonNode> newDataList = (List<JsonNode>) result.get("data");
+            appendAIData(requestDto.getTopic(), newDataList);
+
+            return result;
 
         } catch (WebClientResponseException e) {
             log.error("Error from OpenAI: {}", e.getResponseBodyAsString());
@@ -83,7 +133,7 @@ public class AIService {
         }
 
         // Create the full prompt that enforces the number of records and properties
-        return String.format(
+        String basePrompt = String.format(
                 "The user wants to generate data for the topic \"%s\". " +
                         "Please generate exactly %d records with exactly %d properties per record. " +
                         "Respond in valid JSON format only, with no additional text or explanations. " +
@@ -97,36 +147,11 @@ public class AIService {
                         "Make sure there are exactly %d records, and each record has exactly %d properties, no more, no less.",
                 userTopic, recordCount, propertyCount, properties.toString(), recordCount, propertyCount
         );
-    }
 
-    // New method for generating more data
-    public Map<String, Object> generateMoreTestData(GenerateMoreRequestDto requestDto) {
-        try {
-            // Step 1: Create the prompt for generating more data
-            String prompt = generateMoreDataPrompt(requestDto);
+        // Add instruction to ensure consistent properties
+        String consistencyInstruction = "Ensure that all records have the same properties and data types.";
 
-            // Step 2: Send the prompt to OpenAI API and get the response
-            String rawResponse = webClient.post()
-                    .uri("https://api.openai.com/v1/chat/completions")
-                    .header("Authorization", "Bearer " + openAiApiKey)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(buildOpenAIRequest(prompt))
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            log.debug("Raw response: {}", rawResponse);
-
-            // Step 3: Process the response to extract the data
-            return processResponse(rawResponse);
-
-        } catch (WebClientResponseException e) {
-            log.error("Error from OpenAI: {}", e.getResponseBodyAsString());
-            throw new RuntimeException("Failed to generate data from OpenAI API", e);
-        } catch (Exception e) {
-            log.error("Unexpected error: {}", e.getMessage(), e);
-            throw new RuntimeException("Unexpected error occurred while generating data", e);
-        }
+        return basePrompt + "\n" + consistencyInstruction;
     }
 
     private String generateMoreDataPrompt(GenerateMoreRequestDto requestDto) {
@@ -150,10 +175,13 @@ public class AIService {
 
         promptBuilder.append(" Provide realistic and diverse values relevant to the topic. Respond in valid JSON format only, with no additional text or explanations.");
 
-        return promptBuilder.toString();
+        // Add instruction to ensure consistent properties
+        String consistencyInstruction = "Ensure that all records have the same properties and data types.";
+
+        return promptBuilder.toString() + "\n" + consistencyInstruction;
     }
 
-    private Map<String, Object> processResponse(String rawResponse) throws Exception {
+    private Map<String, Object> processResponse(String rawResponse) throws IOException {
         Map<String, Object> result = new LinkedHashMap<>();
 
         // Parse the raw response as JSON
@@ -176,7 +204,8 @@ public class AIService {
 
             // Make sure the content is an array
             if (dataArray.isArray()) {
-                result.put("data", dataArray);  // Put the array in the result map under "data"
+                List<JsonNode> dataList = objectMapper.convertValue(dataArray, new TypeReference<List<JsonNode>>() {});
+                result.put("data", dataList);  // Put the array in the result map under "data"
             } else {
                 throw new RuntimeException("Expected JSON array but got something else");
             }
@@ -187,4 +216,52 @@ public class AIService {
         return result;
     }
 
+    // Save AI data to the AI_DATA table
+    @Transactional
+    public void saveAIData(String topic, List<JsonNode> dataList) throws IOException {
+        AIData aiData = new AIData();
+        aiData.setTopic(topic);
+        aiData.setData(objectMapper.writeValueAsString(dataList));
+        aiData.setCreatedAt(LocalDateTime.now());
+        aiDataRepository.save(aiData);
+        log.debug("AI data saved for topic: {}", topic);
+    }
+
+    // Append AI data to existing record
+    @Transactional
+    public void appendAIData(String topic, List<JsonNode> newDataList) throws IOException {
+        Optional<AIData> optionalAIData = aiDataRepository.findByTopic(topic);
+        if (optionalAIData.isPresent()) {
+            AIData existingAIData = optionalAIData.get();
+            String existingData = existingAIData.getData();
+            List<JsonNode> existingDataList = objectMapper.readValue(existingData, new TypeReference<List<JsonNode>>() {});
+            existingDataList.addAll(newDataList);
+            existingAIData.setData(objectMapper.writeValueAsString(existingDataList));
+            existingAIData.setCreatedAt(LocalDateTime.now());
+            aiDataRepository.save(existingAIData);
+            log.debug("AI data appended for topic: {}", topic);
+        } else {
+            // If no existing record, create a new one
+            saveAIData(topic, newDataList);
+        }
+    }
+
+    // Retrieve AI data by topic
+    @Transactional
+    public List<JsonNode> getAIDataByTopic(String topic) throws IOException {
+        Optional<AIData> optionalAIData = aiDataRepository.findByTopic(topic);
+        if (optionalAIData.isPresent()) {
+            String data = optionalAIData.get().getData();
+            return objectMapper.readValue(data, new TypeReference<List<JsonNode>>() {});
+        } else {
+            throw new RuntimeException("No AI data found for topic: " + topic);
+        }
+    }
+
+    // Delete AI data by topic
+    @Transactional
+    public void deleteAIDataByTopic(String topic) {
+        aiDataRepository.deleteByTopic(topic);
+        log.debug("AI data deleted for topic: {}", topic);
+    }
 }

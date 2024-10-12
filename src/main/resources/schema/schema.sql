@@ -8,3 +8,10 @@ CREATE TABLE IF NOT EXISTS EMPLOYEE_TBL (
                               AGE INT NOT NULL,
                               EMAIL VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE AI_DATA (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY, -- Changed to BIGINT to match Java Long
+                         topic VARCHAR(255) NOT NULL,
+                         data CLOB NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
