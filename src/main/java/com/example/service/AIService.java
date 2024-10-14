@@ -4,10 +4,13 @@ import com.example.dto.GenerateMoreRequestDto;
 import com.example.dto.Message;
 import com.example.dto.OpenAIRequest;
 import com.example.dto.UserInputDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;  // For logging
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -29,15 +32,18 @@ public class AIService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final Logger logger = LoggerFactory.getLogger(AIService.class);
+
+
     private OpenAIRequest buildOpenAIRequest(String prompt) {
         // Create the message object with the "user" role and the prompt content
         Message userMessage = new Message("user", prompt);
 
         // Build the OpenAI request object with the model, the list of messages, and token limit
         return new OpenAIRequest(
-                "gpt-4",               // Adjust the model name as needed
+                "gpt-4o-mini",               // Adjust the model name as needed
                 List.of(userMessage),  // List of messages (in this case, just the user prompt)
-                1000                   // Set the max tokens (adjust this as needed)
+                3000                   // Set the max tokens (adjust this as needed)
         );
     }
 
@@ -156,29 +162,42 @@ public class AIService {
     private Map<String, Object> processResponse(String rawResponse) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
 
+        logger.debug("Raw AI Response: {}", rawResponse);
+
         // Parse the raw response as JSON
         JsonNode root = objectMapper.readTree(rawResponse);
 
         // Extract the content from choices[0].message.content
         JsonNode choicesNode = root.get("choices");
         if (choicesNode != null && choicesNode.isArray() && !choicesNode.isEmpty()) {
-            String content = choicesNode.get(0).get("message").get("content").asText();
+            JsonNode messageNode = choicesNode.get(0).get("message");
+            if (messageNode == null) {
+                throw new RuntimeException("Message node is missing in choices[0]");
+            }
 
-            // Print out the extracted content for debugging
-            log.debug("Extracted content: {}", content);
+            String content = messageNode.get("content").asText();
 
-            // Remove markdown code block indicators (`` ```json `` and `` ``` ``)
+            // Log the extracted content
+            logger.debug("Extracted content: {}", content);
+
+            // Remove markdown code block indicators (```json and ```)
             String cleanedContent = content.replaceAll("```json", "").replaceAll("```", "").trim();
-            log.debug("Cleaned content: {}", cleanedContent);
+            logger.debug("Cleaned content: {}", cleanedContent);
 
             // Now try to parse the cleaned content as JSON
-            JsonNode dataArray = objectMapper.readTree(cleanedContent);  // Parse cleaned JSON array
+            try {
+                JsonNode dataArray = objectMapper.readTree(cleanedContent);  // Parse cleaned JSON array
+                logger.debug("Parsed JSON Array: {}", dataArray.toString());
 
-            // Make sure the content is an array
-            if (dataArray.isArray()) {
-                result.put("data", dataArray);  // Put the array in the result map under "data"
-            } else {
-                throw new RuntimeException("Expected JSON array but got something else");
+                // Make sure the content is an array
+                if (dataArray.isArray()) {
+                    result.put("data", dataArray);  // Put the array in the result map under "data"
+                } else {
+                    throw new RuntimeException("Expected JSON array but got something else");
+                }
+            } catch (JsonProcessingException e) {
+                logger.error("Failed to parse cleaned content as JSON", e);
+                throw new RuntimeException("Malformed JSON received from AI service", e);
             }
         } else {
             throw new RuntimeException("Choices array is missing or empty");
