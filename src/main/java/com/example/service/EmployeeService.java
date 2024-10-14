@@ -1,28 +1,18 @@
 package com.example.service;
 
 import com.example.dto.EmployeeDto;
-import com.example.dto.UserInputDto;
 import com.example.entity.Employee;
 import com.example.exception.InvalidInputException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.EmployeeMapper;
 import com.example.repository.EmployeeRepository;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 
 @Service
 public class EmployeeService {

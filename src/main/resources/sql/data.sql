@@ -4,3 +4,7 @@ INSERT INTO EMPLOYEE_TBL (NAME, DATE_OF_BIRTH, AVATAR_URL, JOB_ROLE, GENDER, AGE
  ('Charlie Davis', '1992-03-15', 'https://example.com/avatar/charlie', 'QA Engineer', 'Non-binary', 32, 'cdavis@example.com'),
  ('Diana Evans', '1988-11-05', 'https://example.com/avatar/diana', 'Project Manager', 'Female', 35, 'devans@example.com'),
  ('Evan Green', '1993-07-25', 'https://example.com/avatar/evan', 'UX Designer', 'Male', 31, 'egreen@example.com');
+
+INSERT INTO PROJECT_TBL (PROJECT_NAME, DESCRIPTION, EMPLOYEE_ID) VALUES
+ ('Project Alpha', 'Developing the Alpha feature', 1),
+ ('Project Beta', 'Designing the Beta interface', 2);
