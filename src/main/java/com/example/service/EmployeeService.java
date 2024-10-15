@@ -1,36 +1,42 @@
+// src/main/java/com/example/service/EmployeeService.java
 package com.example.service;
 
 import com.example.dto.EmployeeDto;
 import com.example.entity.Employee;
+import com.example.entity.Project;
+import com.example.entity.Skill;
 import com.example.exception.InvalidInputException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.EmployeeMapper;
 import com.example.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.repository.ProjectRepository;
+import com.example.repository.SkillRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
 
-    @Value("${openai.api.key:}")
-    private String openAiApiKey;
-
     private final EmployeeRepository employeeRepository;
+    private final ProjectRepository projectRepository;
+    private final SkillRepository skillRepository;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
-        this.employeeRepository = employeeRepository;
-        this.employeeMapper = employeeMapper;
-    }
-
-    // Returning full Employee data
-    public List<Employee> getAllEmployees() {
-        List<Employee> employees = employeeRepository.findAll();
+    // Returning paginated Employee data
+    public Page<Employee> getAllEmployees(Pageable pageable) {
+        Page<Employee> employees = employeeRepository.findAll(pageable);
         if (employees.isEmpty()) {
             throw new ResourceNotFoundException("No employees found.");
         }
@@ -46,23 +52,40 @@ public class EmployeeService {
     }
 
     // Returning Employee after processing data and saving
+    @Transactional
     public Employee createEmployee(EmployeeDto employeeDto) {
         validateEmployeeInput(employeeDto);
         Employee employee = employeeMapper.toEntity(employeeDto);
-        processEmployeeData(employee);
+        processEmployeeData(employee, employeeDto);
         return employeeRepository.save(employee);
     }
 
-    public Employee updateEmployee(Long employeeId, EmployeeDto employeeDto) {
-        if (employeeId == null || employeeId <= 0) {
-            throw new IllegalArgumentException("Invalid employee ID.");
+    @Transactional
+    public Employee updateEmployee(Long employeeId, EmployeeDto dto) {
+        // Fetch the employee by ID
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + employeeId));
+
+        // Update basic fields
+        employee.setName(dto.getName());
+        employee.setDateOfBirth(dto.getDateOfBirth());
+        employee.setAvatarUrl(dto.getAvatarUrl());
+        employee.setJobRole(dto.getJobRole());
+        employee.setGender(dto.getGender());
+        employee.setEmail(generateEmail(dto.getName()));
+
+        // Fetch and set skills
+        Set<Skill> skills = new HashSet<>(skillRepository.findAllById(dto.getSkillIds()));
+        if (skills.size() != dto.getSkillIds().size()) {
+            throw new EntityNotFoundException("One or more skills not found.");
         }
-        validateEmployeeInput(employeeDto);
-        Employee existingEmployee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
-        employeeMapper.updateFromDto(employeeDto, existingEmployee);
-        processEmployeeData(existingEmployee);
-        return employeeRepository.save(existingEmployee);
+
+        // Clear existing skills and set new ones
+        employee.getSkills().clear();
+        employee.getSkills().addAll(skills);
+
+        // Save the updated employee
+        return employeeRepository.save(employee);
     }
 
     public void deleteEmployee(Long employeeId) {
@@ -75,6 +98,7 @@ public class EmployeeService {
     }
 
     // Batch creation
+    @Transactional
     public List<Employee> createEmployeesBatch(List<EmployeeDto> employeeDtos) {
         if (employeeDtos == null || employeeDtos.isEmpty()) {
             throw new IllegalArgumentException("Employee list cannot be null or empty.");
@@ -82,13 +106,35 @@ public class EmployeeService {
         List<Employee> employees = employeeDtos.stream()
                 .peek(this::validateEmployeeInput)
                 .map(employeeMapper::toEntity)
-                .peek(this::processEmployeeData)
                 .collect(Collectors.toList());
+        employees.forEach(employee -> processEmployeeData(employee, null));
         return employeeRepository.saveAll(employees);
     }
 
-    // Process employee to calculate age and generate email
-    private void processEmployeeData(Employee employee) {
+    // Process employee to calculate age, generate email, and set projects and skills
+    private void processEmployeeData(Employee employee, EmployeeDto employeeDto) {
+        if (employeeDto != null) {
+            // Set Projects
+            if (employeeDto.getProjectIds() != null && !employeeDto.getProjectIds().isEmpty()) {
+                Set<Project> projects = employeeDto.getProjectIds().stream()
+                        .map(projectRepository::findById)
+                        .filter(java.util.Optional::isPresent)
+                        .map(java.util.Optional::get)
+                        .collect(Collectors.toSet());
+                employee.setProjects(projects);
+            }
+
+            // Set Skills
+            if (employeeDto.getSkillIds() != null && !employeeDto.getSkillIds().isEmpty()) {
+                Set<Skill> skills = employeeDto.getSkillIds().stream()
+                        .map(skillRepository::findById)
+                        .filter(java.util.Optional::isPresent)
+                        .map(java.util.Optional::get)
+                        .collect(Collectors.toSet());
+                employee.setSkills(skills);
+            }
+        }
+
         employee.setAge(calculateAge(employee.getDateOfBirth()));
         employee.setEmail(generateEmail(employee.getName()));
     }
@@ -123,5 +169,6 @@ public class EmployeeService {
         if (employeeDto.getGender() == null || employeeDto.getGender().trim().isEmpty()) {
             throw new InvalidInputException("Gender is required.");
         }
+
     }
 }

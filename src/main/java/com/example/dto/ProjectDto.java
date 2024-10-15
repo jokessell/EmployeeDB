@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +23,8 @@ public class ProjectDto {
     @Size(max = 1024, message = "Description cannot exceed 1024 characters.")
     private String description;
 
-    @NotNull(message = "Employee ID is required.")
-    private Long employeeId; // To associate with Employee
+    @NotNull(message = "At least one Employee ID is required.")
+    private Set<Long> employeeIds; // To associate with Employees
+
+    private Set<Long> skillIds; // To associate with Skills
 }

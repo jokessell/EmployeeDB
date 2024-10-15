@@ -1,10 +1,9 @@
 // src/main/java/com/example/entity/Employee.java
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -12,14 +11,18 @@ import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE_TBL")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"projects", "skills"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EMPLOYEE_ID")
+    @EqualsAndHashCode.Include
     private Long employeeId;
 
     @Column(name = "NAME", nullable = false)
@@ -43,7 +46,33 @@ public class Employee {
     @Column(name = "EMAIL")
     private String email;
 
-    // One employee can have many projects
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Many-to-Many with Project
+    @ManyToMany
+    @JoinTable(
+            name = "EMPLOYEE_PROJECT_TBL",
+            joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PROJECT_ID")
+    )
+    @JsonIgnore
     private Set<Project> projects = new HashSet<>();
+
+    // Many-to-Many with Skill
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "EMPLOYEE_SKILL_TBL",
+            joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SKILL_ID")
+    )
+    private Set<Skill> skills = new HashSet<>();
+
+    // Helper Methods
+    public void addSkill(Skill skill) {
+        this.skills.add(skill);
+        skill.getEmployees().add(this);
+    }
+
+    public void removeSkill(Skill skill) {
+        this.skills.remove(skill);
+        skill.getEmployees().remove(this);
+    }
 }

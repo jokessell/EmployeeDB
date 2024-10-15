@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    // Find all projects by employee ID
-    List<Project> findByEmployeeEmployeeId(Long employeeId);
+    // Find all projects by employee ID (many-to-many)
+    List<Project> findByEmployeesEmployeeId(Long employeeId);
 }
-
