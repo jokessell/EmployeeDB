@@ -47,12 +47,7 @@ public class Employee {
     private String email;
 
     // Many-to-Many with Project
-    @ManyToMany
-    @JoinTable(
-            name = "EMPLOYEE_PROJECT_TBL",
-            joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "PROJECT_ID")
-    )
+    @ManyToMany(mappedBy = "employees")
     @JsonIgnore
     private Set<Project> projects = new HashSet<>();
 
@@ -64,15 +59,4 @@ public class Employee {
             inverseJoinColumns = @JoinColumn(name = "SKILL_ID")
     )
     private Set<Skill> skills = new HashSet<>();
-
-    // Helper Methods
-    public void addSkill(Skill skill) {
-        this.skills.add(skill);
-        skill.getEmployees().add(this);
-    }
-
-    public void removeSkill(Skill skill) {
-        this.skills.remove(skill);
-        skill.getEmployees().remove(this);
-    }
 }

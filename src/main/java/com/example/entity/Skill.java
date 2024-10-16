@@ -36,15 +36,4 @@ public class Skill {
     @ManyToMany(mappedBy = "skills")
     @JsonIgnore
     private Set<Project> projects = new HashSet<>();
-
-    // Helper Methods
-    public void addEmployee(Employee employee) {
-        this.employees.add(employee);
-        employee.getSkills().add(this);
-    }
-
-    public void removeEmployee(Employee employee) {
-        this.employees.remove(employee);
-        employee.getSkills().remove(this);
-    }
 }

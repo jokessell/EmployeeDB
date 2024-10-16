@@ -1,9 +1,7 @@
-// src/main/java/com/example/entity/Project.java
 package com.example.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,8 +9,6 @@ import java.util.Set;
 @Entity
 @Table(name = "PROJECT_TBL")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Project {
 
     @Id
@@ -20,18 +16,20 @@ public class Project {
     @Column(name = "PROJECT_ID")
     private Long projectId;
 
-    @Column(name = "PROJECT_NAME", nullable = false)
+    @Column(name = "PROJECT_NAME", nullable = false, length = 255)
     private String projectName;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 1024)
     private String description;
 
-    // Many-to-Many with Employee
-    @ManyToMany(mappedBy = "projects")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "EMPLOYEE_PROJECT_TBL",
+            joinColumns = @JoinColumn(name = "PROJECT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "EMPLOYEE_ID")
+    )
     private Set<Employee> employees = new HashSet<>();
 
-    // Many-to-Many with Skill
     @ManyToMany
     @JoinTable(
             name = "PROJECT_SKILL_TBL",

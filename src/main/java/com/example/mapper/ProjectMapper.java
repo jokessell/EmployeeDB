@@ -3,28 +3,29 @@ package com.example.mapper;
 
 import com.example.dto.ProjectDto;
 import com.example.entity.Project;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {EmployeeMapper.class, SkillMapper.class})
 public interface ProjectMapper {
 
-    @Mapping(target = "projectId", ignore = true)
-    @Mapping(target = "employees", ignore = true)
-    @Mapping(target = "skills", ignore = true)
-    Project toEntity(ProjectDto projectDto);
-
-    @Mapping(source = "employees", target = "employeeIds", qualifiedByName = "employeeIds")
-    @Mapping(source = "skills", target = "skillIds", qualifiedByName = "skillIds")
+    // Mapping from Project entity to ProjectDto with detailed employees and skills
+    @Mapping(target = "employeeIds", source = "employees", qualifiedByName = "projectEmployeesToIds")
+    @Mapping(target = "skillIds", source = "skills", qualifiedByName = "projectSkillsToIds")
+    @Mapping(target = "employees", source = "employees")
+    @Mapping(target = "skills", source = "skills")
     ProjectDto toDto(Project project);
 
-    @Named("employeeIds")
-    default Set<Long> mapEmployeesToIds(Set<com.example.entity.Employee> employees) {
+    // Mapping from ProjectDto to Project entity (excluding detailed objects)
+    @Mapping(target = "employees", ignore = true) // Associations handled in service
+    @Mapping(target = "skills", ignore = true)    // Associations handled in service
+    Project toEntity(ProjectDto projectDto);
+
+    // Custom mapping methods to extract IDs from Employees and Skills
+    @Named("projectEmployeesToIds")
+    default Set<Long> projectEmployeesToIds(Set<com.example.entity.Employee> employees) {
         if (employees == null) {
             return null;
         }
@@ -33,8 +34,8 @@ public interface ProjectMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Named("skillIds")
-    default Set<Long> mapSkillsToIds(Set<com.example.entity.Skill> skills) {
+    @Named("projectSkillsToIds")
+    default Set<Long> projectSkillsToIds(Set<com.example.entity.Skill> skills) {
         if (skills == null) {
             return null;
         }

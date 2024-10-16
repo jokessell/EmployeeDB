@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -23,8 +22,10 @@ public class ProjectDto {
     @Size(max = 1024, message = "Description cannot exceed 1024 characters.")
     private String description;
 
-    @NotNull(message = "At least one Employee ID is required.")
-    private Set<Long> employeeIds; // To associate with Employees
+    private Set<Long> employeeIds; // For input purposes (e.g., PATCH requests)
+    private Set<Long> skillIds;    // For input purposes (e.g., PATCH requests)
 
-    private Set<Long> skillIds; // To associate with Skills
+    // Detailed objects for output purposes
+    private Set<EmployeeDto> employees; // Populated in GET responses
+    private Set<SkillDto> skills;       // Populated in GET responses
 }
