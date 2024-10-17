@@ -1,7 +1,7 @@
 // src/main/java/com/example/entity/Employee.java
 package com.example.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,7 +48,7 @@ public class Employee {
 
     // Many-to-Many with Project
     @ManyToMany(mappedBy = "employees")
-    @JsonIgnore
+    @JsonIgnoreProperties({"employees", "skills"})
     private Set<Project> projects = new HashSet<>();
 
     // Many-to-Many with Skill
@@ -58,5 +58,6 @@ public class Employee {
             joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
             inverseJoinColumns = @JoinColumn(name = "SKILL_ID")
     )
+    @JsonIgnoreProperties({"employees", "projects"})
     private Set<Skill> skills = new HashSet<>();
 }

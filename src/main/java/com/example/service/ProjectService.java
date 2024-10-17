@@ -150,30 +150,24 @@ public class ProjectService {
 
     // Process project to set employees and skills
     private void processProjectData(Project project, ProjectDto projectDto) {
-        if (projectDto.getEmployeeIds() != null && !projectDto.getEmployeeIds().isEmpty()) {
+        // Set Employees
+        if (projectDto.getEmployeeIds() != null) {
             Set<Employee> employees = projectDto.getEmployeeIds().stream()
-                    .map(employeeRepository::findById)
-                    .filter(java.util.Optional::isPresent)
-                    .map(java.util.Optional::get)
+                    .map(id -> employeeRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + id)))
                     .collect(Collectors.toSet());
             project.setEmployees(employees);
             logger.debug("Assigned Employees: {}", employees);
-        } else {
-            project.getEmployees().clear();
-            logger.debug("Cleared all Employees from Project ID: {}", project.getProjectId());
         }
 
-        if (projectDto.getSkillIds() != null && !projectDto.getSkillIds().isEmpty()) {
+        // Set Skills
+        if (projectDto.getSkillIds() != null) {
             Set<Skill> skills = projectDto.getSkillIds().stream()
-                    .map(skillRepository::findById)
-                    .filter(java.util.Optional::isPresent)
-                    .map(java.util.Optional::get)
+                    .map(id -> skillRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Skill not found with ID: " + id)))
                     .collect(Collectors.toSet());
             project.setSkills(skills);
             logger.debug("Assigned Skills: {}", skills);
-        } else {
-            project.getSkills().clear();
-            logger.debug("Cleared all Skills from Project ID: {}", project.getProjectId());
         }
     }
 }

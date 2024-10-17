@@ -2,13 +2,15 @@
 package com.example.mapper;
 
 import com.example.dto.EmployeeDto;
+import com.example.dto.SkillDto;
 import com.example.entity.Employee;
+import com.example.entity.Skill;
 import org.mapstruct.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = SkillMapper.class)
 public interface EmployeeMapper {
 
     // Existing mapping methods
@@ -26,22 +28,14 @@ public interface EmployeeMapper {
     @Mapping(target = "skills", ignore = true)
     void updateFromDto(EmployeeDto employeeDto, @MappingTarget Employee employee);
 
-    // **Add this method to map Employee to EmployeeDto**
-    @Mapping(target = "skillIds", source = "skills", qualifiedByName = "employeeSkillsToIds")
+    // **Updated toDto method to include employeeId and skills**
+    @Mapping(target = "employeeId", source = "employeeId")
+    @Mapping(target = "skills", source = "skills")
+    @Mapping(target = "skillIds", ignore = true) // Optional: Remove if not needed
     @Mapping(target = "projectIds", source = "projects", qualifiedByName = "employeeProjectsToIds")
     EmployeeDto toDto(Employee employee);
 
-    // **Custom mapping methods to extract IDs from Skills and Projects**
-    @Named("employeeSkillsToIds")
-    default Set<Long> employeeSkillsToIds(Set<com.example.entity.Skill> skills) {
-        if (skills == null) {
-            return null;
-        }
-        return skills.stream()
-                .map(com.example.entity.Skill::getSkillId)
-                .collect(Collectors.toSet());
-    }
-
+    // Custom mapping method to extract project IDs
     @Named("employeeProjectsToIds")
     default Set<Long> employeeProjectsToIds(Set<com.example.entity.Project> projects) {
         if (projects == null) {

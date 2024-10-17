@@ -9,8 +9,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface SkillMapper {
     SkillDto toDto(Skill skill);
-    Skill toEntity(SkillDto skillDto);
 
-    // Update existing Skill entity with SkillDto
-    void updateFromDto(SkillDto skillDto, @MappingTarget Skill skill);
+    Skill toEntity(SkillDto skillDto);
 }

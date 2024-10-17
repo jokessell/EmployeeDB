@@ -1,7 +1,10 @@
+// src/main/java/com/example/entity/Project.java
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "PROJECT_TBL")
 @Data
+@ToString(exclude = {"employees", "skills"})
 public class Project {
 
     @Id
@@ -28,6 +32,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "PROJECT_ID"),
             inverseJoinColumns = @JoinColumn(name = "EMPLOYEE_ID")
     )
+    @JsonIgnoreProperties({"projects", "skills"})
     private Set<Employee> employees = new HashSet<>();
 
     @ManyToMany
@@ -36,5 +41,6 @@ public class Project {
             joinColumns = @JoinColumn(name = "PROJECT_ID"),
             inverseJoinColumns = @JoinColumn(name = "SKILL_ID")
     )
+    @JsonIgnoreProperties({"projects", "employees"})
     private Set<Skill> skills = new HashSet<>();
 }
