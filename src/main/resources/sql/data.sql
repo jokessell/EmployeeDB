@@ -33,26 +33,26 @@ INSERT INTO SKILL_TBL (NAME) VALUES
 
 -- Insert Employees
 INSERT INTO EMPLOYEE_TBL (NAME, DATE_OF_BIRTH, AVATAR_URL, JOB_ROLE, GENDER, AGE, EMAIL) VALUES
- ('Alice Johnson', '1990-05-21', 'https://example.com/avatar/alice', 'Software Engineer', 'Female', 34, 'ajohnson@example.com'),
- ('Bob Smith', '1985-08-10', 'https://example.com/avatar/bob', 'DevOps Engineer', 'Male', 39, 'bsmith@example.com'),
- ('Charlie Davis', '1992-03-15', 'https://example.com/avatar/charlie', 'QA Engineer', 'Non-binary', 32, 'cdavis@example.com'),
- ('Diana Evans', '1988-11-05', 'https://example.com/avatar/diana', 'Project Manager', 'Female', 35, 'devans@example.com'),
- ('Evan Green', '1993-07-25', 'https://example.com/avatar/evan', 'UX Designer', 'Male', 31, 'egreen@example.com'),
- ('Fiona Harris', '1991-02-17', 'https://example.com/avatar/fiona', 'Frontend Developer', 'Female', 33, 'fharris@example.com'),
- ('George King', '1987-09-12', 'https://example.com/avatar/george', 'Backend Developer', 'Male', 36, 'gking@example.com'),
- ('Hannah Lee', '1994-04-30', 'https://example.com/avatar/hannah', 'Data Scientist', 'Female', 30, 'hlee@example.com'),
- ('Ian Moore', '1989-06-22', 'https://example.com/avatar/ian', 'DevOps Engineer', 'Male', 34, 'imoore@example.com'),
- ('Jasmine Patel', '1995-01-08', 'https://example.com/avatar/jasmine', 'QA Analyst', 'Female', 29, 'jpatel@example.com'),
- ('Kevin Quinn', '1990-10-14', 'https://example.com/avatar/kevin', 'Software Engineer', 'Male', 33, 'kquinn@example.com'),
- ('Laura Roberts', '1986-12-03', 'https://example.com/avatar/laura', 'Product Manager', 'Female', 37, 'lroberts@example.com'),
- ('Michael Scott', '1984-07-07', 'https://example.com/avatar/michael', 'Scrum Master', 'Male', 39, 'mscott@example.com'),
- ('Nina Turner', '1993-03-19', 'https://example.com/avatar/nina', 'UI/UX Designer', 'Female', 31, 'nturner@example.com'),
- ('Oscar Vega', '1988-05-27', 'https://example.com/avatar/oscar', 'Security Analyst', 'Male', 35, 'ovega@example.com'),
- ('Paula White', '1992-11-11', 'https://example.com/avatar/paula', 'Frontend Developer', 'Female', 31, 'pwhite@example.com'),
- ('Quentin Brown', '1987-08-19', 'https://example.com/avatar/quentin', 'Backend Developer', 'Male', 36, 'qbrown@example.com'),
- ('Rachel Adams', '1991-09-23', 'https://example.com/avatar/rachel', 'Data Analyst', 'Female', 32, 'radams@example.com'),
- ('Steven Clark', '1985-04-05', 'https://example.com/avatar/steven', 'DevOps Engineer', 'Male', 38, 'sclark@example.com'),
- ('Tina Davis', '1994-02-28', 'https://example.com/avatar/tina', 'Quality Assurance', 'Female', 30, 'tdavis@example.com');
+ ('Alice Johnson', '1990-05-21', 'https://api.dicebear.com/6.x/adventurer/png?seed=Alice%20Johnson', 'Software Engineer', 'Female', 34, 'ajohnson@example.com'),
+ ('Bob Smith', '1985-08-10', 'https://api.dicebear.com/6.x/adventurer/png?seed=Bob%20Smith', 'DevOps Engineer', 'Male', 39, 'bsmith@example.com'),
+ ('Charlie Davis', '1992-03-15', 'https://api.dicebear.com/6.x/adventurer/png?seed=Charlie%20Davis', 'QA Engineer', 'Non-binary', 32, 'cdavis@example.com'),
+ ('Diana Evans', '1988-11-05', 'https://api.dicebear.com/6.x/adventurer/png?seed=Diana%20Evans', 'Project Manager', 'Female', 35, 'devans@example.com'),
+ ('Evan Green', '1993-07-25', 'https://api.dicebear.com/6.x/adventurer/png?seed=Evan%20Green', 'UX Designer', 'Male', 31, 'egreen@example.com'),
+ ('Fiona Harris', '1991-02-17', 'https://api.dicebear.com/6.x/adventurer/png?seed=Fiona%20Harris', 'Frontend Developer', 'Female', 33, 'fharris@example.com'),
+ ('George King', '1987-09-12', 'https://api.dicebear.com/6.x/adventurer/png?seed=George%20King', 'Backend Developer', 'Male', 36, 'gking@example.com'),
+ ('Hannah Lee', '1994-04-30', 'https://api.dicebear.com/6.x/adventurer/png?seed=Hannah%20Lee', 'Data Scientist', 'Female', 30, 'hlee@example.com'),
+ ('Ian Moore', '1989-06-22', 'https://api.dicebear.com/6.x/adventurer/png?seed=Ian%20Moore', 'DevOps Engineer', 'Male', 34, 'imoore@example.com'),
+ ('Jasmine Patel', '1995-01-08', 'https://api.dicebear.com/6.x/adventurer/png?seed=Jasmine%20Patel', 'QA Analyst', 'Female', 29, 'jpatel@example.com'),
+ ('Kevin Quinn', '1990-10-14', 'https://api.dicebear.com/6.x/adventurer/png?seed=Kevin%20Quinn', 'Software Engineer', 'Male', 33, 'kquinn@example.com'),
+ ('Laura Roberts', '1986-12-03', 'https://api.dicebear.com/6.x/adventurer/png?seed=Laura%20Roberts', 'Product Manager', 'Female', 37, 'lroberts@example.com'),
+ ('Michael Scott', '1984-07-07', 'https://api.dicebear.com/6.x/adventurer/png?seed=Michael%20Scott', 'Scrum Master', 'Male', 39, 'mscott@example.com'),
+ ('Nina Turner', '1993-03-19', 'https://api.dicebear.com/6.x/adventurer/png?seed=Nina%20Turner', 'UI/UX Designer', 'Female', 31, 'nturner@example.com'),
+ ('Oscar Vega', '1988-05-27', 'https://api.dicebear.com/6.x/adventurer/png?seed=Oscar%20Vega', 'Security Analyst', 'Male', 35, 'ovega@example.com'),
+ ('Paula White', '1992-11-11', 'https://api.dicebear.com/6.x/adventurer/png?seed=Paula%20White', 'Frontend Developer', 'Female', 31, 'pwhite@example.com'),
+ ('Quentin Brown', '1987-08-19', 'https://api.dicebear.com/6.x/adventurer/png?seed=Quentin%20Brown', 'Backend Developer', 'Male', 36, 'qbrown@example.com'),
+ ('Rachel Adams', '1991-09-23', 'https://api.dicebear.com/6.x/adventurer/png?seed=Rachel%20Adams', 'Data Analyst', 'Female', 32, 'radams@example.com'),
+ ('Steven Clark', '1985-04-05', 'https://api.dicebear.com/6.x/adventurer/png?seed=Steven%20Clark', 'DevOps Engineer', 'Male', 38, 'sclark@example.com'),
+ ('Tina Davis', '1994-02-28', 'https://api.dicebear.com/6.x/adventurer/png?seed=Tina%20Davis', 'Quality Assurance', 'Female', 30, 'tdavis@example.com');
 
 -- Insert Projects
 INSERT INTO PROJECT_TBL (PROJECT_NAME, DESCRIPTION) VALUES
