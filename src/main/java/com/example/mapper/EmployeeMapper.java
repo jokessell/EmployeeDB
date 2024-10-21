@@ -2,10 +2,9 @@
 package com.example.mapper;
 
 import com.example.dto.EmployeeDto;
-import com.example.dto.SkillDto;
 import com.example.entity.Employee;
-import com.example.entity.Skill;
 import org.mapstruct.*;
+import com.example.entity.Project;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,12 +36,12 @@ public interface EmployeeMapper {
 
     // Custom mapping method to extract project IDs
     @Named("employeeProjectsToIds")
-    default Set<Long> employeeProjectsToIds(Set<com.example.entity.Project> projects) {
+    default Set<Long> employeeProjectsToIds(Set<Project> projects) {
         if (projects == null) {
             return null;
         }
         return projects.stream()
-                .map(com.example.entity.Project::getProjectId)
+                .map(Project::getProjectId)
                 .collect(Collectors.toSet());
     }
 }

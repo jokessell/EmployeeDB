@@ -42,13 +42,6 @@ public class EmployeeController {
         return ResponseEntity.ok(createdEmployee);
     }
 
-    // POST /api/employees/batch
-    @PostMapping("/batch")
-    public ResponseEntity<List<Employee>> createEmployeesBatch(@Valid @RequestBody List<EmployeeDto> employeeDtos) {
-        List<Employee> createdEmployees = employeeService.createEmployeesBatch(employeeDtos);
-        return ResponseEntity.ok(createdEmployees);
-    }
-
     // PUT /api/employees/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDto employeeDto) {

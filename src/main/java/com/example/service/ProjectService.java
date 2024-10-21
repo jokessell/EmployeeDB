@@ -52,11 +52,13 @@ public class ProjectService {
 
     @Transactional
     public ProjectDto createProject(ProjectDto projectDto) {
-        logger.debug("Creating project from DTO: {}", projectDto);
+        if (projectDto.getProjectName() == null || projectDto.getProjectName().isEmpty()) {
+            throw new IllegalArgumentException("Project name cannot be null or empty");
+        }
+        // Proceed with mapping and processing
         Project project = projectMapper.toEntity(projectDto);
         processProjectData(project, projectDto);
         Project savedProject = projectRepository.save(project);
-        logger.debug("Saved project: {}", savedProject);
         return projectMapper.toDto(savedProject);
     }
 
@@ -118,7 +120,7 @@ public class ProjectService {
 
         // Handle Skills if necessary
         if (projectDto.getSkillIds() != null) {
-            Set<com.example.entity.Skill> skills = projectDto.getSkillIds().stream()
+            Set<Skill> skills = projectDto.getSkillIds().stream()
                     .map(id -> skillRepository.findById(id)
                             .orElseThrow(() -> new ResourceNotFoundException("Skill not found with ID: " + id)))
                     .collect(Collectors.toSet());

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;  // For logging
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import java.util.Map;
 @Slf4j  // For logging
 public class AIService {
 
+    // Add a setter for openAiApiKey for testing purposes
+    @Setter
     @Value("${openai.api.key:}")
     private String openAiApiKey;
 
@@ -33,7 +36,6 @@ public class AIService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final Logger logger = LoggerFactory.getLogger(AIService.class);
-
 
     private OpenAIRequest buildOpenAIRequest(String prompt) {
         // Create the message object with the "user" role and the prompt content

@@ -52,11 +52,16 @@ public class EmployeeService {
     }
 
     // Returning Employee after processing data and saving
-    @Transactional
     public Employee createEmployee(EmployeeDto employeeDto) {
         validateEmployeeInput(employeeDto);
         Employee employee = employeeMapper.toEntity(employeeDto);
-        processEmployeeData(employee, employeeDto);
+        // Set skills
+        Set<Skill> skills = new HashSet<>(skillRepository.findAllById(employeeDto.getSkillIds()));
+        employee.setSkills(skills);
+        // Set projects
+        Set<Project> projects = new HashSet<>(projectRepository.findAllById(employeeDto.getProjectIds()));
+        employee.setProjects(projects);
+        // Save employee
         return employeeRepository.save(employee);
     }
 
@@ -97,20 +102,6 @@ public class EmployeeService {
         employeeRepository.delete(employee);
     }
 
-    // Batch creation
-    @Transactional
-    public List<Employee> createEmployeesBatch(List<EmployeeDto> employeeDtos) {
-        if (employeeDtos == null || employeeDtos.isEmpty()) {
-            throw new IllegalArgumentException("Employee list cannot be null or empty.");
-        }
-        List<Employee> employees = employeeDtos.stream()
-                .peek(this::validateEmployeeInput)
-                .map(employeeMapper::toEntity)
-                .collect(Collectors.toList());
-        employees.forEach(employee -> processEmployeeData(employee, null));
-        return employeeRepository.saveAll(employees);
-    }
-
     // Process employee to calculate age, generate email, and set projects and skills
     private void processEmployeeData(Employee employee, EmployeeDto employeeDto) {
         if (employeeDto != null) {
@@ -143,7 +134,7 @@ public class EmployeeService {
         return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 
-    private String generateEmail(String name) {
+    String generateEmail(String name) {
         String[] nameParts = name.split(" ");
         if (nameParts.length >= 2) {
             return nameParts[0].toLowerCase() + "." + nameParts[1].toLowerCase() + "@email.com";
