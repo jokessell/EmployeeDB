@@ -61,6 +61,8 @@ public class EmployeeService {
         // Set projects
         Set<Project> projects = new HashSet<>(projectRepository.findAllById(employeeDto.getProjectIds()));
         employee.setProjects(projects);
+        // **Process employee data to set Age and Email**
+        processEmployeeData(employee, employeeDto);
         // Save employee
         return employeeRepository.save(employee);
     }
@@ -77,7 +79,9 @@ public class EmployeeService {
         employee.setAvatarUrl(dto.getAvatarUrl());
         employee.setJobRole(dto.getJobRole());
         employee.setGender(dto.getGender());
-        employee.setEmail(generateEmail(dto.getName()));
+
+        // **Process employee data to set Age and Email**
+        processEmployeeData(employee, dto);
 
         // Fetch and set skills
         Set<Skill> skills = new HashSet<>(skillRepository.findAllById(dto.getSkillIds()));
@@ -131,11 +135,17 @@ public class EmployeeService {
     }
 
     private int calculateAge(LocalDate dateOfBirth) {
+        if (dateOfBirth == null) {
+            return 0; // Or throw an exception if dateOfBirth is mandatory
+        }
         return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 
     String generateEmail(String name) {
-        String[] nameParts = name.split(" ");
+        if (name == null || name.trim().isEmpty()) {
+            return ""; // Or throw an exception if name is mandatory
+        }
+        String[] nameParts = name.trim().split("\\s+");
         if (nameParts.length >= 2) {
             return nameParts[0].toLowerCase() + "." + nameParts[1].toLowerCase() + "@email.com";
         } else {
@@ -160,6 +170,5 @@ public class EmployeeService {
         if (employeeDto.getGender() == null || employeeDto.getGender().trim().isEmpty()) {
             throw new InvalidInputException("Gender is required.");
         }
-
     }
 }
