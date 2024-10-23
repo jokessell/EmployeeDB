@@ -346,38 +346,40 @@ class ProjectServiceTest {
     void testPartialUpdateProject_Success() {
         // Arrange
         Long projectId = 1L;
-        Project existingProject = project1;
         ProjectDto partialUpdateDto = new ProjectDto();
-        partialUpdateDto.setProjectName("Project Alpha Partially Updated");
+        partialUpdateDto.setProjectName("Updated Project Alpha");
+        partialUpdateDto.setDescription("Updated Alpha Description");
+        partialUpdateDto.setEmployeeIds(new HashSet<>(Arrays.asList(1L, 2L)));
+        partialUpdateDto.setSkillIds(new HashSet<>(Arrays.asList(1L, 2L)));
 
-        Project updatedProject = new Project();
-        updatedProject.setProjectId(projectId);
-        updatedProject.setProjectName("Project Alpha Partially Updated");
-        updatedProject.setDescription(existingProject.getDescription());
-        updatedProject.setEmployees(existingProject.getEmployees());
-        updatedProject.setSkills(existingProject.getSkills());
-
-        ProjectDto updatedProjectDto = new ProjectDto();
-        updatedProjectDto.setProjectId(projectId);
-        updatedProjectDto.setProjectName("Project Alpha Partially Updated");
-        updatedProjectDto.setDescription(existingProject.getDescription());
-        updatedProjectDto.setEmployeeIds(existingProject.getEmployees().stream().map(Employee::getEmployeeId).collect(Collectors.toSet()));
-        updatedProjectDto.setSkillIds(existingProject.getSkills().stream().map(Skill::getSkillId).collect(Collectors.toSet()));
-
-        when(projectRepository.findById(projectId)).thenReturn(Optional.of(existingProject));
-        when(projectRepository.save(existingProject)).thenReturn(updatedProject);
-        when(projectMapper.toDto(updatedProject)).thenReturn(updatedProjectDto);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project1));
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee1));
+        when(employeeRepository.findById(2L)).thenReturn(Optional.of(employee2));
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill1));
+        when(skillRepository.findById(2L)).thenReturn(Optional.of(skill2));
+        when(projectRepository.save(any(Project.class))).thenReturn(project1);
+        when(projectMapper.toDto(project1)).thenReturn(projectDto1);
 
         // Act
         ProjectDto result = projectService.partialUpdateProject(projectId, partialUpdateDto);
 
         // Assert
         assertNotNull(result, "Result should not be null.");
-        assertEquals(updatedProjectDto, result, "Partially updated ProjectDto should match expected.");
+        assertEquals(projectDto1, result, "Updated ProjectDto should match expected.");
 
         verify(projectRepository, times(1)).findById(projectId);
-        verify(projectRepository, times(1)).save(existingProject);
-        verify(projectMapper, times(1)).toDto(updatedProject);
+        verify(employeeRepository, times(1)).findById(1L);
+        verify(employeeRepository, times(1)).findById(2L);
+        verify(skillRepository, times(1)).findById(1L);
+        verify(skillRepository, times(1)).findById(2L);
+        verify(projectRepository, times(1)).save(projectCaptor.capture());
+        verify(projectMapper, times(1)).toDto(project1);
+
+        Project capturedProject = projectCaptor.getValue();
+        assertEquals("Updated Project Alpha", capturedProject.getProjectName(), "Project name should be updated.");
+        assertEquals("Updated Alpha Description", capturedProject.getDescription(), "Project description should be updated.");
+        assertEquals(new HashSet<>(Arrays.asList(employee1, employee2)), capturedProject.getEmployees(), "Project employees should be updated.");
+        assertEquals(new HashSet<>(Arrays.asList(skill1, skill2)), capturedProject.getSkills(), "Project skills should be updated.");
     }
 
     /**
@@ -559,5 +561,70 @@ class ProjectServiceTest {
         verify(projectMapper, never()).toDto(any(Project.class));
     }
 
-    // ... (Additional test cases as needed)
+    @Test
+    void testCreateProject_InvalidProjectName() {
+        // Arrange
+        ProjectDto invalidProjectDto = new ProjectDto();
+        invalidProjectDto.setProjectName(""); // Invalid name
+        invalidProjectDto.setDescription("Invalid Project without name");
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            projectService.createProject(invalidProjectDto);
+        }, "Expected IllegalArgumentException for null or empty project name.");
+
+        assertEquals("Project name cannot be null or empty", exception.getMessage(), "Exception message should match.");
+    }
+
+    @Test
+    void testPartialUpdateProject_NoChanges() {
+        // Arrange
+        Long projectId = 1L;
+        Project existingProject = project1;
+        ProjectDto partialUpdateDto = new ProjectDto(); // No changes in DTO
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(existingProject));
+        when(projectRepository.save(existingProject)).thenReturn(existingProject);
+        when(projectMapper.toDto(existingProject)).thenReturn(projectDto1);
+
+        // Act
+        ProjectDto result = projectService.partialUpdateProject(projectId, partialUpdateDto);
+
+        // Assert
+        assertNotNull(result, "Result should not be null.");
+        assertEquals(projectDto1, result, "ProjectDto should match expected.");
+
+        verify(projectRepository, times(1)).findById(projectId);
+        verify(projectRepository, times(1)).save(existingProject);
+        verify(projectMapper, times(1)).toDto(existingProject);
+    }
+
+    @Test
+    void testUpdateProject_ClearEmployeesAndSkills() {
+        // Arrange
+        Long projectId = 1L;
+        Project existingProject = project1;
+        ProjectDto updateDto = new ProjectDto();
+        updateDto.setProjectName("Project Alpha Cleared");
+        updateDto.setDescription("Cleared Employees and Skills");
+        updateDto.setEmployeeIds(new HashSet<>()); // Empty set to clear employees
+        updateDto.setSkillIds(new HashSet<>()); // Empty set to clear skills
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(existingProject));
+        when(projectRepository.save(existingProject)).thenReturn(existingProject);
+        when(projectMapper.toDto(existingProject)).thenReturn(projectDto1);
+
+        // Act
+        ProjectDto result = projectService.updateProject(projectId, updateDto);
+
+        // Assert
+        assertNotNull(result, "Result should not be null.");
+        assertEquals(projectDto1, result, "Updated ProjectDto should match expected.");
+        assertTrue(existingProject.getEmployees().isEmpty(), "Employees should be cleared.");
+        assertTrue(existingProject.getSkills().isEmpty(), "Skills should be cleared.");
+
+        verify(projectRepository, times(1)).findById(projectId);
+        verify(projectRepository, times(1)).save(existingProject);
+        verify(projectMapper, times(1)).toDto(existingProject);
+    }
 }

@@ -155,7 +155,7 @@ public class EmployeeService {
 
     // Validation logic for input
     private void validateEmployeeInput(EmployeeDto employeeDto) {
-        if (employeeDto.getName() == null || employeeDto.getName().trim().isEmpty()) {
+        if (employeeDto.getName() == null || employeeDto.getName().trim().isEmpty()) { //Apache commonslang
             throw new InvalidInputException("Employee name is required.");
         }
 

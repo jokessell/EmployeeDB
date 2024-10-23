@@ -1,12 +1,12 @@
 // src/main/java/com/example/dto/ProjectDto.java
 package com.example.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Data

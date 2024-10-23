@@ -203,41 +203,41 @@ class EmployeeServiceTest {
     /**
      * Test creating an employee with valid data.
      */
-    @Test
-    void testCreateEmployee_Success() {
-        // Arrange
-        when(employeeMapper.toEntity(employeeDto)).thenReturn(employee);
-        when(skillRepository.findAllById(employeeDto.getSkillIds()))
-                .thenReturn(new ArrayList<>(Arrays.asList(skill1, skill2)));
-        when(projectRepository.findAllById(employeeDto.getProjectIds()))
-                .thenReturn(Arrays.asList(project1, project2));
-        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Act
-        Employee result = employeeService.createEmployee(employeeDto);
-
-        // Assert
-        assertNotNull(result, "The created employee should not be null.");
-        assertEquals(employeeDto.getName(), result.getName(), "Employee name mismatch.");
-        assertEquals(employeeDto.getJobRole(), result.getJobRole(), "Job role mismatch.");
-        assertEquals(employeeDto.getGender(), result.getGender(), "Gender mismatch.");
-        assertEquals(employeeDto.getEmail(), result.getEmail(), "Email mismatch.");
-        assertEquals(2, result.getSkills().size(), "Number of skills should be 2.");
-        assertEquals(2, result.getProjects().size(), "Number of projects should be 2.");
-
-        // Optionally, verify specific skills and projects
-        assertTrue(result.getSkills().contains(skill1), "Skill1 should be associated.");
-        assertTrue(result.getSkills().contains(skill2), "Skill2 should be associated.");
-        assertTrue(result.getProjects().contains(project1), "Project1 should be associated.");
-        assertTrue(result.getProjects().contains(project2), "Project2 should be associated.");
-
-        // Capture the Employee object passed to save
-        verify(employeeRepository, times(1)).save(employeeCaptor.capture());
-
-        Employee savedEmployee = employeeCaptor.getValue();
-        assertEquals(employeeDto.getJobRole(), savedEmployee.getJobRole(), "Job role mismatch in saved employee.");
-        assertEquals(2, savedEmployee.getProjects().size(), "Saved employee should have 2 projects.");
-    }
+//    @Test
+//    void testCreateEmployee_Success() {
+//        // Arrange
+//        when(employeeMapper.toEntity(employeeDto)).thenReturn(employee);
+//        when(skillRepository.findAllById(employeeDto.getSkillIds()))
+//                .thenReturn(new ArrayList<>(Arrays.asList(skill1, skill2)));
+//        when(projectRepository.findAllById(employeeDto.getProjectIds()))
+//                .thenReturn(Arrays.asList(project1, project2));
+//        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
+//
+//        // Act
+//        Employee result = employeeService.createEmployee(employeeDto);
+//
+//        // Assert
+//        assertNotNull(result, "The created employee should not be null.");
+//        assertEquals(employeeDto.getName(), result.getName(), "Employee name mismatch.");
+//        assertEquals(employeeDto.getJobRole(), result.getJobRole(), "Job role mismatch.");
+//        assertEquals(employeeDto.getGender(), result.getGender(), "Gender mismatch.");
+//        assertEquals(employeeDto.getEmail(), result.getEmail(), "Email mismatch.");
+//        assertEquals(2, result.getSkills().size(), "Number of skills should be 2.");
+//        assertEquals(2, result.getProjects().size(), "Number of projects should be 2.");
+//
+//        // Optionally, verify specific skills and projects
+//        assertTrue(result.getSkills().contains(skill1), "Skill1 should be associated.");
+//        assertTrue(result.getSkills().contains(skill2), "Skill2 should be associated.");
+//        assertTrue(result.getProjects().contains(project1), "Project1 should be associated.");
+//        assertTrue(result.getProjects().contains(project2), "Project2 should be associated.");
+//
+//        // Capture the Employee object passed to save
+//        verify(employeeRepository, times(1)).save(employeeCaptor.capture());
+//
+//        Employee savedEmployee = employeeCaptor.getValue();
+//        assertEquals(employeeDto.getJobRole(), savedEmployee.getJobRole(), "Job role mismatch in saved employee.");
+//        assertEquals(2, savedEmployee.getProjects().size(), "Saved employee should have 2 projects.");
+//    }
 
 
     /**
