@@ -1,4 +1,3 @@
-// src/test/java/com/example/service/EmployeeServiceTest.java
 package com.example.service;
 
 import com.example.dto.EmployeeDto;
@@ -16,12 +15,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -72,11 +72,11 @@ class EmployeeServiceTest {
         employee.setEmployeeId(1L);
         employee.setName("John Doe");
         employee.setDateOfBirth(employeeDto.getDateOfBirth());
-        employee.setJobRole("Developer"); // Ensure this matches employeeDto.getJobRole()
+        employee.setJobRole("Developer");
         employee.setGender("Male");
         employee.setAvatarUrl(employeeDto.getAvatarUrl());
         employee.setEmail("john.doe@email.com");
-        employee.setAge(33); // assuming current year is 2023
+        employee.setAge(Period.between(employeeDto.getDateOfBirth(), LocalDate.now()).getYears());
         employee.setSkills(new HashSet<>());
         employee.setProjects(new HashSet<>());
 
@@ -99,12 +99,132 @@ class EmployeeServiceTest {
         project2.setProjectName("Project Beta");
     }
 
+    @Test
+    void testProcessEmployeeData_shouldSetCorrectProjectsSkillsAgeAndEmail() {
+        // Arrange
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project1));
+        when(projectRepository.findById(2L)).thenReturn(Optional.of(project2));
+        when(skillRepository.findById(1L)).thenReturn(Optional.of(skill1));
+        when(skillRepository.findById(2L)).thenReturn(Optional.of(skill2));
 
-    // **Test Cases**
+        // Act
+        employeeService.processEmployeeData(employee, employeeDto);
 
-    /**
-     * Test getting all employees when employees exist.
-     */
+        // Assert
+        assertEquals(2, employee.getProjects().size(), "Projects size mismatch.");
+        assertTrue(employee.getProjects().containsAll(Arrays.asList(project1, project2)), "Projects not set correctly.");
+        assertEquals(2, employee.getSkills().size(), "Skills size mismatch.");
+        assertTrue(employee.getSkills().containsAll(Arrays.asList(skill1, skill2)), "Skills not set correctly.");
+        assertEquals(Period.between(employeeDto.getDateOfBirth(), LocalDate.now()).getYears(), employee.getAge(), "Age not calculated correctly.");
+        assertEquals("john.doe@email.com", employee.getEmail(), "Email not generated correctly.");
+    }
+
+    @Test
+    void testCalculateAge_shouldReturnCorrectAge_whenDateOfBirthIsValid() {
+        // Arrange
+        LocalDate dateOfBirth = LocalDate.of(1990, 1, 1);
+        int expectedAge = Period.between(dateOfBirth, LocalDate.now()).getYears();
+
+        // Act
+        int age = employeeService.calculateAge(dateOfBirth);
+
+        // Assert
+        assertEquals(expectedAge, age, "Age calculation is incorrect.");
+    }
+
+    @Test
+    void testCalculateAge_shouldReturnZero_whenDateOfBirthIsNull() {
+        // Act
+        int age = employeeService.calculateAge(null);
+
+        // Assert
+        assertEquals(0, age, "Age should be zero when date of birth is null.");
+    }
+
+    @Test
+    void testGenerateEmail_shouldGenerateEmail_whenNameIsValid() {
+        // Arrange
+        String name = "John Doe";
+
+        // Act
+        String email = employeeService.generateEmail(name);
+
+        // Assert
+        assertEquals("john.doe@email.com", email, "Email generation is incorrect.");
+    }
+
+    @Test
+    void testGenerateEmail_shouldReturnEmpty_whenNameIsNull() {
+        // Act
+        String email = employeeService.generateEmail(null);
+
+        // Assert
+        assertEquals("", email, "Email should be empty when name is null.");
+    }
+
+    @Test
+    void testGenerateEmail_shouldReturnEmailWithSingleName_whenNameHasOnlyOnePart() {
+        // Arrange
+        String name = "John";
+
+        // Act
+        String email = employeeService.generateEmail(name);
+
+        // Assert
+        assertEquals("john@email.com", email, "Email generation for single name part is incorrect.");
+    }
+
+    @Test
+    void testCreateEmployee_shouldReturnEmployee_whenInputIsValid() {
+        // Arrange
+        when(employeeMapper.toEntity(employeeDto)).thenReturn(employee);
+        when(skillRepository.findAllById(employeeDto.getSkillIds())).thenReturn(Arrays.asList(skill1, skill2));
+        when(projectRepository.findAllById(employeeDto.getProjectIds())).thenReturn(Arrays.asList(project1, project2));
+        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> {
+            Employee savedEmployee = invocation.getArgument(0);
+            savedEmployee.setSkills(new HashSet<>(Arrays.asList(skill1, skill2)));
+            savedEmployee.setProjects(new HashSet<>(Arrays.asList(project1, project2)));
+            return savedEmployee;
+        });
+
+        // Act
+        Employee result = employeeService.createEmployee(employeeDto);
+
+        // Assert
+        assertNotNull(result, "The created employee should not be null.");
+        assertEquals(employeeDto.getName(), result.getName(), "Employee name mismatch.");
+        assertEquals(employeeDto.getJobRole(), result.getJobRole(), "Job role mismatch.");
+        assertEquals(employeeDto.getGender(), result.getGender(), "Gender mismatch.");
+        assertEquals(employeeDto.getEmail(), result.getEmail(), "Email mismatch.");
+        assertEquals(2, result.getSkills().size(), "Number of skills should be 2.");
+        assertEquals(2, result.getProjects().size(), "Number of projects should be 2.");
+    }
+
+    @Test
+    void testUpdateEmployee_shouldReturnUpdatedEmployee_whenInputIsValid() {
+        // Arrange
+        Long employeeId = 1L;
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        when(skillRepository.findAllById(employeeDto.getSkillIds())).thenReturn(Arrays.asList(skill1, skill2));
+        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> {
+            Employee savedEmployee = invocation.getArgument(0);
+            savedEmployee.setSkills(new HashSet<>(Arrays.asList(skill1, skill2)));
+            savedEmployee.setProjects(new HashSet<>(Arrays.asList(project1, project2)));
+            return savedEmployee;
+        });
+
+        // Act
+        Employee result = employeeService.updateEmployee(employeeId, employeeDto);
+
+        // Assert
+        assertNotNull(result, "The updated employee should not be null.");
+        assertEquals(employeeDto.getName(), result.getName(), "Employee name mismatch.");
+        assertEquals(employeeDto.getJobRole(), result.getJobRole(), "Job role mismatch.");
+        assertEquals(employeeDto.getGender(), result.getGender(), "Gender mismatch.");
+        assertEquals(Period.between(employeeDto.getDateOfBirth(), LocalDate.now()).getYears(), result.getAge(), "Age mismatch.");
+        assertEquals(employeeDto.getEmail(), result.getEmail(), "Email mismatch.");
+    }
+
     @Test
     void testGetAllEmployees_Success() {
         // Arrange
@@ -124,10 +244,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findAll(pageable);
     }
 
-    /**
-     * Test getting all employees when no employees exist.
-     * Expects ResourceNotFoundException.
-     */
     @Test
     void testGetAllEmployees_NoEmployees() {
         // Arrange
@@ -145,9 +261,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findAll(pageable);
     }
 
-    /**
-     * Test getting an employee by valid ID.
-     */
     @Test
     void testGetEmployeeById_Success() {
         // Arrange
@@ -163,10 +276,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findById(employeeId);
     }
 
-    /**
-     * Test getting an employee by invalid ID (negative).
-     * Expects IllegalArgumentException.
-     */
     @Test
     void testGetEmployeeById_InvalidId() {
         // Arrange
@@ -181,10 +290,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).findById(anyLong());
     }
 
-    /**
-     * Test getting an employee by ID when employee does not exist.
-     * Expects ResourceNotFoundException.
-     */
     @Test
     void testGetEmployeeById_NotFound() {
         // Arrange
@@ -200,50 +305,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).findById(employeeId);
     }
 
-    /**
-     * Test creating an employee with valid data.
-     */
-//    @Test
-//    void testCreateEmployee_Success() {
-//        // Arrange
-//        when(employeeMapper.toEntity(employeeDto)).thenReturn(employee);
-//        when(skillRepository.findAllById(employeeDto.getSkillIds()))
-//                .thenReturn(new ArrayList<>(Arrays.asList(skill1, skill2)));
-//        when(projectRepository.findAllById(employeeDto.getProjectIds()))
-//                .thenReturn(Arrays.asList(project1, project2));
-//        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
-//
-//        // Act
-//        Employee result = employeeService.createEmployee(employeeDto);
-//
-//        // Assert
-//        assertNotNull(result, "The created employee should not be null.");
-//        assertEquals(employeeDto.getName(), result.getName(), "Employee name mismatch.");
-//        assertEquals(employeeDto.getJobRole(), result.getJobRole(), "Job role mismatch.");
-//        assertEquals(employeeDto.getGender(), result.getGender(), "Gender mismatch.");
-//        assertEquals(employeeDto.getEmail(), result.getEmail(), "Email mismatch.");
-//        assertEquals(2, result.getSkills().size(), "Number of skills should be 2.");
-//        assertEquals(2, result.getProjects().size(), "Number of projects should be 2.");
-//
-//        // Optionally, verify specific skills and projects
-//        assertTrue(result.getSkills().contains(skill1), "Skill1 should be associated.");
-//        assertTrue(result.getSkills().contains(skill2), "Skill2 should be associated.");
-//        assertTrue(result.getProjects().contains(project1), "Project1 should be associated.");
-//        assertTrue(result.getProjects().contains(project2), "Project2 should be associated.");
-//
-//        // Capture the Employee object passed to save
-//        verify(employeeRepository, times(1)).save(employeeCaptor.capture());
-//
-//        Employee savedEmployee = employeeCaptor.getValue();
-//        assertEquals(employeeDto.getJobRole(), savedEmployee.getJobRole(), "Job role mismatch in saved employee.");
-//        assertEquals(2, savedEmployee.getProjects().size(), "Saved employee should have 2 projects.");
-//    }
-
-
-    /**
-     * Test creating an employee with invalid input (name is null).
-     * Expects InvalidInputException.
-     */
     @Test
     void testCreateEmployee_InvalidInput_NameNull() {
         // Arrange
@@ -263,10 +324,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
-    /**
-     * Test creating an employee with invalid input (date of birth in the future).
-     * Expects InvalidInputException.
-     */
     @Test
     void testCreateEmployee_InvalidInput_DateOfBirthInFuture() {
         // Arrange
@@ -286,10 +343,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
-    /**
-     * Test creating an employee with invalid input (job role is null).
-     * Expects InvalidInputException.
-     */
     @Test
     void testCreateEmployee_InvalidInput_JobRoleNull() {
         // Arrange
@@ -309,10 +362,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
-    /**
-     * Test creating an employee with invalid input (gender is null).
-     * Expects InvalidInputException.
-     */
     @Test
     void testCreateEmployee_InvalidInput_GenderNull() {
         // Arrange
@@ -332,10 +381,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
-    /**
-     * Test updating an employee with invalid ID (negative).
-     * Expects EntityNotFoundException.
-     */
     @Test
     void testUpdateEmployee_InvalidId() {
         // Arrange
@@ -354,10 +399,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
-    /**
-     * Test updating a non-existing employee.
-     * Expects EntityNotFoundException.
-     */
     @Test
     void testUpdateEmployee_NotFound() {
         // Arrange
@@ -376,9 +417,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
-    /**
-     * Test deleting an existing employee.
-     */
     @Test
     void testDeleteEmployee_Success() {
         // Arrange
@@ -393,10 +431,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).delete(employee);
     }
 
-    /**
-     * Test deleting an employee with invalid ID (zero).
-     * Expects IllegalArgumentException.
-     */
     @Test
     void testDeleteEmployee_InvalidId() {
         // Arrange
@@ -412,10 +446,6 @@ class EmployeeServiceTest {
         verify(employeeRepository, never()).delete(any(Employee.class));
     }
 
-    /**
-     * Test deleting a non-existing employee.
-     * Expects ResourceNotFoundException.
-     */
     @Test
     void testDeleteEmployee_NotFound() {
         // Arrange

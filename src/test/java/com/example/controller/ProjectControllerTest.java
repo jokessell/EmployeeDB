@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -89,5 +90,35 @@ public class ProjectControllerTest {
 
         mockMvc.perform(delete("/api/projects/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void partialUpdateProject_shouldReturnUpdatedProject_whenValidIdAndDataProvided() throws Exception {
+        Long projectId = 1L;
+        ProjectDto partialUpdateDto = new ProjectDto();
+        partialUpdateDto.setDescription("Updated description");
+
+        ProjectDto updatedProjectDto = new ProjectDto(projectId, "Project X", "Updated description", null, null, null, null);
+        Mockito.when(projectService.partialUpdateProject(Mockito.eq(projectId), Mockito.any(ProjectDto.class))).thenReturn(updatedProjectDto);
+
+        mockMvc.perform(patch("/api/projects/" + projectId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"description\": \"Updated description\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.projectId").value(1L))
+                .andExpect(jsonPath("$.description").value("Updated description"));
+    }
+
+    @Test
+    void getProjectsByEmployeeId_shouldReturnProjectList_whenEmployeeIdIsValid() throws Exception {
+        Long employeeId = 1L;
+        ProjectDto projectDto = new ProjectDto(1L, "Project X", "Top secret project", null, null, null, null);
+        List<ProjectDto> projects = Collections.singletonList(projectDto);
+        Mockito.when(projectService.getProjectsByEmployeeId(employeeId)).thenReturn(projects);
+
+        mockMvc.perform(get("/api/projects/employee/" + employeeId).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].projectId").value(1L))
+                .andExpect(jsonPath("$[0].projectName").value("Project X"));
     }
 }

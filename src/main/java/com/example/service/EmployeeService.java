@@ -107,7 +107,7 @@ public class EmployeeService {
     }
 
     // Process employee to calculate age, generate email, and set projects and skills
-    private void processEmployeeData(Employee employee, EmployeeDto employeeDto) {
+    void processEmployeeData(Employee employee, EmployeeDto employeeDto) {
         if (employeeDto != null) {
             // Set Projects
             if (employeeDto.getProjectIds() != null && !employeeDto.getProjectIds().isEmpty()) {
@@ -134,7 +134,7 @@ public class EmployeeService {
         employee.setEmail(generateEmail(employee.getName()));
     }
 
-    private int calculateAge(LocalDate dateOfBirth) {
+    int calculateAge(LocalDate dateOfBirth) {
         if (dateOfBirth == null) {
             return 0; // Or throw an exception if dateOfBirth is mandatory
         }
