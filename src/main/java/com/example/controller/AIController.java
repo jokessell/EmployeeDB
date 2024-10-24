@@ -20,6 +20,10 @@ public class AIController {
 
     @PostMapping("/generate-data")
     public List<String> generateData(@RequestBody UserInputDto requestDto) {
+        if (requestDto == null) {
+            throw new RuntimeException("User input cannot be null");
+        }
+
         Map<String, Object> result = aiService.generateTestData(requestDto);
 
         // Extract the data field from the result and return it as a list of strings
@@ -27,15 +31,18 @@ public class AIController {
         List<String> dataList = new ArrayList<>();
 
         if (dataJson != null && dataJson.isArray()) {
-            dataJson.forEach(item -> dataList.add(item.toString()));  // Convert each record to a string
+            dataJson.forEach(item -> dataList.add(item.toString()));  // Convert each record to a string for consistency
         }
 
         return dataList;
     }
 
-    // New endpoint for "Generate More"
     @PostMapping("/generate-more-data")
     public List<String> generateMoreData(@RequestBody GenerateMoreRequestDto requestDto) {
+        if (requestDto == null) {
+            throw new RuntimeException("Request cannot be null");
+        }
+
         Map<String, Object> result = aiService.generateMoreTestData(requestDto);
 
         // Extract the data field from the result and return it as a list of strings
@@ -43,9 +50,10 @@ public class AIController {
         List<String> dataList = new ArrayList<>();
 
         if (dataJson != null && dataJson.isArray()) {
-            dataJson.forEach(item -> dataList.add(item.toString()));  // Convert each record to a string
+            dataJson.forEach(item -> dataList.add(item.toString()));  // Use toString() to preserve JSON structure
         }
 
         return dataList;
     }
+
 }
