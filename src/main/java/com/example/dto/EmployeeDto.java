@@ -1,12 +1,8 @@
 // src/main/java/com/example/dto/EmployeeDto.java
 package com.example.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -20,8 +16,7 @@ public class EmployeeDto {
     @NotBlank(message = "Name is required.")
     private String name;
 
-    @NotNull(message = "Date of Birth is required.")
-    @Past(message = "Date of Birth must be in the past.")
+    @NotNull(message = "Date of birth is required.")
     private LocalDate dateOfBirth;
 
     private String avatarUrl;
@@ -32,11 +27,13 @@ public class EmployeeDto {
     @NotBlank(message = "Gender is required.")
     private String gender;
 
+    private int age;
+
     private String email;
 
-    private Set<Long> skillIds;    // For input purposes
-    private Set<Long> projectIds;  // For input purposes
+    private Set<SkillDto> skills;       // Detailed skills
+    private Set<Long> skillIds;         // For input purposes
 
-    // Detailed objects for output purposes
-    private Set<SkillDto> skills; // Populated in GET responses
+    private Set<ProjectDto> projects;   // Detailed projects with skills
+    private Set<Long> projectIds;       // For input purposes
 }

@@ -35,40 +35,59 @@ public class EmployeeService {
     private final EmployeeMapper employeeMapper;
 
     // Returning paginated Employee data
-    public Page<Employee> getAllEmployees(Pageable pageable) {
+    public Page<EmployeeDto> getAllEmployees(Pageable pageable) {
         Page<Employee> employees = employeeRepository.findAll(pageable);
         if (employees.isEmpty()) {
             throw new ResourceNotFoundException("No employees found.");
         }
-        return employees;
+        return employees.map(employeeMapper::toDto);
     }
 
-    public Employee getEmployeeById(Long employeeId) {
+    public EmployeeDto getEmployeeById(Long employeeId) {
         if (employeeId == null || employeeId <= 0) {
             throw new IllegalArgumentException("Invalid employee ID.");
         }
-        return employeeRepository.findById(employeeId)
+        Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
+        return employeeMapper.toDto(employee);
     }
 
-    // Returning Employee after processing data and saving
-    public Employee createEmployee(EmployeeDto employeeDto) {
+    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         validateEmployeeInput(employeeDto);
         Employee employee = employeeMapper.toEntity(employeeDto);
+
         // Set skills
-        Set<Skill> skills = new HashSet<>(skillRepository.findAllById(employeeDto.getSkillIds()));
+        Set<Skill> skills = new HashSet<>();
+        if (employeeDto.getSkillIds() != null && !employeeDto.getSkillIds().isEmpty()) {
+            skills.addAll(skillRepository.findAllById(employeeDto.getSkillIds()));
+            if (skills.size() != employeeDto.getSkillIds().size()) {
+                throw new EntityNotFoundException("One or more skills not found.");
+            }
+        }
         employee.setSkills(skills);
+
         // Set projects
-        Set<Project> projects = new HashSet<>(projectRepository.findAllById(employeeDto.getProjectIds()));
+        Set<Project> projects = new HashSet<>();
+        if (employeeDto.getProjectIds() != null && !employeeDto.getProjectIds().isEmpty()) {
+            projects.addAll(projectRepository.findAllById(employeeDto.getProjectIds()));
+            if (projects.size() != employeeDto.getProjectIds().size()) {
+                throw new EntityNotFoundException("One or more projects not found.");
+            }
+        }
         employee.setProjects(projects);
-        // **Process employee data to set Age and Email**
+
+        // Process employee data to set Age and Email
         processEmployeeData(employee, employeeDto);
+
         // Save employee
-        return employeeRepository.save(employee);
+        Employee savedEmployee = employeeRepository.save(employee);
+
+        // Return EmployeeDto
+        return employeeMapper.toDto(savedEmployee);
     }
 
     @Transactional
-    public Employee updateEmployee(Long employeeId, EmployeeDto dto) {
+    public EmployeeDto updateEmployee(Long employeeId, EmployeeDto dto) {
         // Fetch the employee by ID
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + employeeId));
@@ -80,21 +99,38 @@ public class EmployeeService {
         employee.setJobRole(dto.getJobRole());
         employee.setGender(dto.getGender());
 
-        // **Process employee data to set Age and Email**
+        // Process employee data to set Age and Email
         processEmployeeData(employee, dto);
 
         // Fetch and set skills
-        Set<Skill> skills = new HashSet<>(skillRepository.findAllById(dto.getSkillIds()));
-        if (skills.size() != dto.getSkillIds().size()) {
-            throw new EntityNotFoundException("One or more skills not found.");
+        Set<Skill> skills = new HashSet<>();
+        if (dto.getSkillIds() != null && !dto.getSkillIds().isEmpty()) {
+            skills.addAll(skillRepository.findAllById(dto.getSkillIds()));
+            if (skills.size() != dto.getSkillIds().size()) {
+                throw new EntityNotFoundException("One or more skills not found.");
+            }
         }
-
         // Clear existing skills and set new ones
         employee.getSkills().clear();
         employee.getSkills().addAll(skills);
 
+        // Fetch and set projects
+        Set<Project> projects = new HashSet<>();
+        if (dto.getProjectIds() != null && !dto.getProjectIds().isEmpty()) {
+            projects.addAll(projectRepository.findAllById(dto.getProjectIds()));
+            if (projects.size() != dto.getProjectIds().size()) {
+                throw new EntityNotFoundException("One or more projects not found.");
+            }
+        }
+        // Clear existing projects and set new ones
+        employee.getProjects().clear();
+        employee.getProjects().addAll(projects);
+
         // Save the updated employee
-        return employeeRepository.save(employee);
+        Employee updatedEmployee = employeeRepository.save(employee);
+
+        // Return EmployeeDto
+        return employeeMapper.toDto(updatedEmployee);
     }
 
     public void deleteEmployee(Long employeeId) {

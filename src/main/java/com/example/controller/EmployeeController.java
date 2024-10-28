@@ -2,16 +2,12 @@
 package com.example.controller;
 
 import com.example.dto.EmployeeDto;
-import com.example.entity.Employee;
 import com.example.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -23,29 +19,29 @@ public class EmployeeController {
 
     // GET /api/employees?page=0&size=10&sort=name,asc
     @GetMapping("")
-    public ResponseEntity<Page<Employee>> getAllEmployees(Pageable pageable) {
-        Page<Employee> employees = employeeService.getAllEmployees(pageable);
+    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(Pageable pageable) {
+        Page<EmployeeDto> employees = employeeService.getAllEmployees(pageable);
         return ResponseEntity.ok(employees);
     }
 
     // GET /api/employees/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable(name = "id") Long id) {
-        Employee employee = employeeService.getEmployeeById(id);
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable(name = "id") Long id) {
+        EmployeeDto employee = employeeService.getEmployeeById(id);
         return ResponseEntity.ok(employee);
     }
 
     // POST /api/employees
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
-        Employee createdEmployee = employeeService.createEmployee(employeeDto);
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto createdEmployee = employeeService.createEmployee(employeeDto);
         return ResponseEntity.ok(createdEmployee);
     }
 
     // PUT /api/employees/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDto employeeDto) {
-        Employee updatedEmployee = employeeService.updateEmployee(id, employeeDto);
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, employeeDto);
         return ResponseEntity.ok(updatedEmployee);
     }
 
