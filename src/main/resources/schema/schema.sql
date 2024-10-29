@@ -51,3 +51,25 @@ CREATE TABLE IF NOT EXISTS PROJECT_SKILL_TBL (
                                                  CONSTRAINT FK_PROJECT_SKILL_PROJECT FOREIGN KEY (PROJECT_ID) REFERENCES PROJECT_TBL(PROJECT_ID) ON DELETE CASCADE,
                                                  CONSTRAINT FK_PROJECT_SKILL_SKILL FOREIGN KEY (SKILL_ID) REFERENCES SKILL_TBL(SKILL_ID) ON DELETE CASCADE
 );
+
+-- Create the 'roles' table
+CREATE TABLE ROLE_TBL (
+                       ROLE_ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       ROLE_NAME VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Create the 'users' table
+CREATE TABLE USER_TBL (
+                       USER_ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       USER_NAME VARCHAR(50) NOT NULL UNIQUE,
+                       USER_PASSWORD VARCHAR(100) NOT NULL
+);
+
+-- Create the 'user_roles' join table to establish many-to-many relationships
+CREATE TABLE USER_ROLE_TBL (
+                            USER_ID BIGINT NOT NULL,
+                            ROLE_ID BIGINT NOT NULL,
+                            PRIMARY KEY (USER_ID, ROLE_ID),
+                            FOREIGN KEY (USER_ID) REFERENCES USER_TBL(USER_ID) ON DELETE CASCADE,
+                            FOREIGN KEY (ROLE_ID) REFERENCES ROLE_TBL(ROLE_ID) ON DELETE CASCADE
+);

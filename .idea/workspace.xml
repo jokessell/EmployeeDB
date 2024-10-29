@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d99c3dc6-e757-4724-b755-6562e91350e7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/DataInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/controller/AdminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/controller/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/AssignRoleRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/JwtResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/MessageResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/RegisterRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/RoleRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/UserResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/entity/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/filter/JwtAuthorizationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/repository/RoleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/service/CustomUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EmployeeDB.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDbApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/EmployeeDbApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/configuration/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/configuration/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/H2Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/configuration/JPAConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/JPAConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/configuration/OpenApiConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/OpenApiConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/configuration/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/configuration/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/controller/AIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/controller/AIController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/controller/EmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/controller/EmployeeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/controller/ProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/controller/SkillController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/controller/SkillController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/EmployeeDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/EmployeeDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/GenerateMoreRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/GenerateMoreRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/OpenAIRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/OpenAIRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/ProjectDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/ProjectDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/SkillDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/SkillDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/dto/UserInputDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/dto/UserInputDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/entity/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/entity/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/entity/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/entity/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/entity/Skill.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/entity/Skill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/exception/InvalidInputException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/exception/InvalidInputException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/exception/ResourceNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/exception/ResourceNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mapper/EmployeeMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/mapper/EmployeeMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mapper/ProjectMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/mapper/ProjectMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mapper/SkillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/mapper/SkillMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/repository/EmployeeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/repository/ProjectRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/repository/ProjectRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/repository/SkillRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/repository/SkillRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/service/AIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/service/AIService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/service/EmployeeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/service/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/service/ProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/service/SkillService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/EmployeeDB/service/SkillService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/schema/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/schema/schema.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/sql/data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/sql/data.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/controller/AIControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/controller/AIControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/controller/EmployeeControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/controller/EmployeeControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/controller/ProjectControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/controller/ProjectControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/controller/SkillControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/controller/SkillControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/dto/DTOTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/dto/DTOTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/dto/EmployeeDtoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/dto/EmployeeDtoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/dto/ProjectDtoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/dto/ProjectDtoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/dto/SkillDtoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/dto/SkillDtoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/entity/EmployeeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/entity/EmployeeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/entity/ProjectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/entity/ProjectTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/entity/SkillTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/entity/SkillTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/exception/GlobalExceptionHandlerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/exception/GlobalExceptionHandlerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/mapper/EmployeeMapperTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/mapper/EmployeeMapperTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/mapper/ProjectMapperTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/mapper/ProjectMapperTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/service/AIServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/service/AIServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/service/EmployeeServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/service/EmployeeServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/service/ProjectServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/service/ProjectServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/service/SkillServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/service/SkillServiceTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jokessell&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jokessell/EmployeeDB.git&quot;,
+    &quot;accountId&quot;: &quot;84a6cd16-4d88-4706-839e-081a44955f5b&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2mweE6phmoX65dPJSZCLNodLm3N" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Database Script.Initialize_DB.executor": "Run",
+    "Database Script.data.sql.executor": "Run",
+    "Database Script.schema.sql.executor": "Run",
+    "JUnit.AIControllerTest.executor": "Run",
+    "JUnit.AIServiceTest.executor": "Run",
+    "JUnit.EmployeeControllerTest.testUpdateEmployee.executor": "Run",
+    "JUnit.EmployeeServiceTest.executor": "Run",
+    "JUnit.EmployeeServiceTest.testCreateEmployee_Success.executor": "Run",
+    "JUnit.EmployeeServiceTest.testGetEmployeeById_Success.executor": "Run",
+    "JUnit.ProjectControllerTest.executor": "Run",
+    "JUnit.ProjectServiceTest.executor": "Run",
+    "JUnit.ProjectServiceTest.testCreateProject_InvalidData_MissingProjectName.executor": "Run",
+    "JUnit.SkillControllerTest.testGetAllSkills.executor": "Run",
+    "JUnit.SkillServiceTest.executor": "Run",
+    "JUnit.controller in EmployeeDB.executor": "Run",
+    "JUnit.example in EmployeeDB.executor": "Coverage",
+    "JUnit.java in EmployeeDB.executor": "Run",
+    "JUnit.service in EmployeeDB.executor": "Coverage",
+    "Maven.EmployeeDB [org.apache.maven.plugins:maven-clean-plugin:3.3.2:clean].executor": "Run",
+    "Maven.EmployeeDB [org.apache.maven.plugins:maven-install-plugin:3.1.3:install].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.EmployeeDbApplication.executor": "Run",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/jokessell/IdeaProjects/employee_management",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "project.propCompiler",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "h2"
+    ],
+    "RunConfigurationTargetLRU": [
+      "e8d8453d-647d-4b85-984d-6ca1d0cc69c9/database/\"EMPLOYEE_DB\"/schema/\"PUBLIC\"",
+      "e8d8453d-647d-4b85-984d-6ca1d0cc69c9/database/\"EMPLOYEE_DB\"",
+      "e8d8453d-647d-4b85-984d-6ca1d0cc69c9"
+    ]
+  }
+}]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\jokessell\Projects\EmployeeDB" />
+      <recent name="C:\Users\jokessell\Projects\EmployeeDB\src" />
+      <recent name="C:\Users\jokessell\Projects\EmployeeDB\src\main" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.EmployeeDbApplication">
+    <configuration name="data.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$PROJECT_DIR$/src/main/resources/sql/data.sql" />
+      <script-mode>FILE</script-mode>
+      <data-source id="e8d8453d-647d-4b85-984d-6ca1d0cc69c9" />
+      <method v="2" />
+    </configuration>
+    <configuration name="schema.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$PROJECT_DIR$/src/main/resources/schema/schema.sql" />
+      <script-mode>FILE</script-mode>
+      <data-source id="e8d8453d-647d-4b85-984d-6ca1d0cc69c9" />
+      <method v="2" />
+    </configuration>
+    <configuration name="EmployeeServiceTest.testGetEmployeeById_Success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EmployeeDB" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.service" />
+      <option name="MAIN_CLASS_NAME" value="com.example.service.EmployeeServiceTest" />
+      <option name="METHOD_NAME" value="testGetEmployeeById_Success" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="controller in EmployeeDB" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EmployeeDB" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/com/example/EmployeeDB/controller" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in EmployeeDB" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EmployeeDB" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EmployeeDbApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="EmployeeDB" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.EmployeeDB.EmployeeDbApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Database Script.data.sql" />
+      <item itemvalue="Database Script.schema.sql" />
+      <item itemvalue="JUnit.EmployeeServiceTest.testGetEmployeeById_Success" />
+      <item itemvalue="JUnit.controller in EmployeeDB" />
+      <item itemvalue="JUnit.java in EmployeeDB" />
+      <item itemvalue="Spring Boot.EmployeeDbApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Database Script.schema.sql" />
+        <item itemvalue="Database Script.data.sql" />
+        <item itemvalue="JUnit.controller in EmployeeDB" />
+        <item itemvalue="JUnit.EmployeeServiceTest.testGetEmployeeById_Success" />
+        <item itemvalue="JUnit.java in EmployeeDB" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21155.17" />
+        <option value="bundled-js-predefined-d6986cc7102b-bed05e336f61-JavaScript-IU-243.21155.17" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d99c3dc6-e757-4724-b755-6562e91350e7" name="Changes" comment="" />
+      <created>1727991953549</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727991953549</updated>
+      <workItem from="1727991954497" duration="1123000" />
+      <workItem from="1727993240723" duration="4217000" />
+      <workItem from="1728057067624" duration="28601000" />
+      <workItem from="1728420082626" duration="49632000" />
+      <workItem from="1729003499106" duration="16351000" />
+      <workItem from="1729180202865" duration="15312000" />
+      <workItem from="1729504720633" duration="18000" />
+      <workItem from="1729504780470" duration="7000" />
+      <workItem from="1729504800392" duration="3000" />
+      <workItem from="1729504821241" duration="4000" />
+      <workItem from="1729507698444" duration="30470000" />
+      <workItem from="1729858624520" duration="5152000" />
+      <workItem from="1730124665572" duration="10586000" />
+      <workItem from="1730154738790" duration="1657000" />
+      <workItem from="1730157101610" duration="7217000" />
+      <workItem from="1730166149297" duration="2753000" />
+      <workItem from="1730168922058" duration="685000" />
+      <workItem from="1730169659724" duration="376000" />
+      <workItem from="1730170421789" duration="171000" />
+      <workItem from="1730170604685" duration="174000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/EmployeeDB$service_in_EmployeeDB.ic" NAME="service in EmployeeDB Coverage Results" MODIFIED="1729619226310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/EmployeeDB$example_in_EmployeeDB.ic" NAME="example in EmployeeDB Coverage Results" MODIFIED="1729713927021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/EmployeeDB$java_in_EmployeeDB.ic" NAME="java in EmployeeDB Coverage Results" MODIFIED="1729792177473" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+  </component>
+</project>
