@@ -11,8 +11,8 @@ import java.util.Set;
 @Entity
 @Table(name = "EMPLOYEE_TBL")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString(exclude = {"projects", "skills"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Employee {

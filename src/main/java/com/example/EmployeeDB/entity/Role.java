@@ -8,13 +8,11 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROLE_ID")
-    @EqualsAndHashCode.Include
     private Long roleId;
 
     @Column(name = "ROLE_NAME", unique = true, nullable = false)

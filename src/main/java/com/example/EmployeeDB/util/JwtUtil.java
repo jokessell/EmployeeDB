@@ -44,7 +44,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
-                .issuer("your-app-name") // Optional: set issuer
+                .issuer("Employee Management") // Optional: set issuer
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key)

@@ -2,7 +2,9 @@ package com.example.EmployeeDB.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.HashSet;
@@ -11,6 +13,8 @@ import java.util.Set;
 @Entity
 @Table(name = "PROJECT_TBL")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(exclude = {"employees", "skills"})
 public class Project {
 

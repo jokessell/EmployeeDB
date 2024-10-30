@@ -10,8 +10,6 @@ import java.util.Set;
 @Table(name = "USER_TBL")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id

@@ -1,4 +1,5 @@
 // src/main/java/com/example/EmployeeDB/service/CustomUserDetailsService.java
+
 package com.example.EmployeeDB.service;
 
 import com.example.EmployeeDB.entity.Role;
@@ -13,12 +14,22 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * CustomUserDetailsService loads user-specific data during authentication.
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Loads the user by username and maps roles to GrantedAuthority.
+     *
+     * @param username the username identifying the user
+     * @return the UserDetails object
+     * @throws UsernameNotFoundException if the user is not found
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username)
@@ -26,7 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Set<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(Role::getRoleName)
-                .map(SimpleGrantedAuthority::new)
+                .map(roleName -> new SimpleGrantedAuthority("ROLE_" + roleName)) // Prefix with ROLE_
                 .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails.User(

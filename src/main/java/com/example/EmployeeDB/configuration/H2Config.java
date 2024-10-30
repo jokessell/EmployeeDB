@@ -22,19 +22,19 @@ import java.util.Properties;
 @Slf4j
 public class H2Config {
 
-    @Value("${h2.driver.class.name}")
+    @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
 
-    @Value("${h2.jdbc.url}")
+    @Value("${spring.datasource.url}")
     private String jdbcUrl;
 
-    @Value("${h2.jdbc.user}")
+    @Value("${spring.datasource.username}")
     private String jdbcUser;
 
-    @Value("${h2.jdbc.password}")
+    @Value("${spring.datasource.password}")
     private String jdbcPassword;
 
-    private static final String BASE_PACKAGE = "com.example.entity";
+    private static final String BASE_PACKAGE = "com.example.EmployeeDB.entity";
 
     @Bean
     public DataSource dataSource() {

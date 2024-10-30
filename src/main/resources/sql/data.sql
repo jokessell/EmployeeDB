@@ -228,12 +228,15 @@ INSERT INTO PROJECT_SKILL_TBL (PROJECT_ID, SKILL_ID) VALUES
 
 -- Insert Roles
 INSERT INTO ROLE_TBL (ROLE_NAME) VALUES
-                             ('ADMIN'),
-                             ('ELEVATED'),
-                             ('BASIC');
+('ADMIN'),
+('ELEVATED'),
+('BASIC');
 
 -- Insert Users
-INSERT INTO USER_TBL (USER_NAME, USER_PASSWORD) VALUES ('admin', '$2a$10$Dow1cJZhfT3.Ec0Vv6qSPOJB76EhIHTEU3gJvgeqYPrGToSD0iLuK');
+INSERT INTO USER_TBL (USER_NAME, USER_PASSWORD) VALUES
+('admin', '$2a$10$Lg9DzK/lUgIIxRgDuaGdh.ntMXbwrODGIv0YtT7r7Bnddqed7TtNW'),
+('elevatedUser', '$2a$10$Lg9DzK/lUgIIxRgDuaGdh.ntMXbwrODGIv0YtT7r7Bnddqed7TtNW'),
+('johnDoe', '$2a$10$Lg9DzK/lUgIIxRgDuaGdh.ntMXbwrODGIv0YtT7r7Bnddqed7TtNW');
 
 -- Assign Role to User
 -- Assuming the 'ADMIN' role has id=1 and the 'admin' user has id=1

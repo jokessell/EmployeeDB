@@ -9,8 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "SKILL_TBL")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"employees", "projects"})

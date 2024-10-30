@@ -39,7 +39,6 @@ public class AdminController {
         return ResponseEntity.ok(new MessageResponse("Role created successfully."));
     }
 
-    // Assign roles to a user
     @PostMapping("/assign-role")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> assignRoleToUser(@Valid @RequestBody AssignRoleRequest assignRoleRequest) {
@@ -51,19 +50,28 @@ public class AdminController {
         }
 
         User user = userOpt.get();
-        Set<Role> rolesToAssign = new HashSet<>();
 
-        for (String roleName : assignRoleRequest.getRoles()) {
-            Role role = roleRepository.findByRoleName(roleName)
-                    .orElseThrow(() -> new RuntimeException("Error: Role " + roleName + " not found."));
-            rolesToAssign.add(role);
+        // Check if attempting to change the role of the only remaining admin
+        boolean isLastAdmin = user.getRoles().stream().anyMatch(role -> role.getRoleName().equals("ADMIN")) &&
+                roleRepository.countByRoleName("ADMIN") == 1;
+        if (isLastAdmin && !assignRoleRequest.getRoles().contains("ADMIN")) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Cannot remove the last remaining Admin role."));
         }
 
-        user.setRoles(rolesToAssign);
+        // Assign a single role - ensure immutability doesn't cause errors
+        String roleName = assignRoleRequest.getRoles().iterator().next();
+        Role role = roleRepository.findByRoleName(roleName)
+                .orElseThrow(() -> new RuntimeException("Error: Role " + roleName + " not found."));
+
+        user.setRoles(new HashSet<>(Set.of(role))); // Create a modifiable HashSet for roles
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("Roles assigned to user successfully."));
+        return ResponseEntity.ok(new MessageResponse("Role assigned to user successfully."));
     }
+
+
 
     // Get all roles
     @GetMapping("/roles")
@@ -86,4 +94,31 @@ public class AdminController {
         )).collect(Collectors.toList());
         return ResponseEntity.ok(userResponses);
     }
+
+    // Delete a user
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: User not found."));
+        }
+
+        User user = userOpt.get();
+
+        // Check if this user is the last admin
+        boolean isLastAdmin = user.getRoles().stream().anyMatch(role -> role.getRoleName().equals("ADMIN")) &&
+                roleRepository.countByRoleName("ADMIN") == 1;
+        if (isLastAdmin) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Cannot delete the last remaining Admin user."));
+        }
+
+        userRepository.deleteById(id);
+        return ResponseEntity.ok(new MessageResponse("User deleted successfully."));
+    }
+
 }
